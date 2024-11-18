@@ -1,4 +1,6 @@
 using WarehouseAppR.Server;
+using WarehouseAppR.Server.Interfaces;
+using WarehouseAppR.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,9 +11,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddDbContext<WarehouseDbContext>(); //DI dla DB
 builder.Services.AddScoped<DataSeeder>();
-
+builder.Services.AddScoped<ICategoryCRUDService, CategoryCRUDService>();
 
 var app = builder.Build();
 

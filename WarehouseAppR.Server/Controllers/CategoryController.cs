@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WarehouseAppR.Server.DTOs;
+using WarehouseAppR.Server.Interfaces;
+using WarehouseAppR.Server.Models;
 
 namespace WarehouseAppR.Server.Controllers
 {
@@ -7,24 +10,39 @@ namespace WarehouseAppR.Server.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ILogger<CategoryController> _logger;
-        public CategoryController(ILogger<CategoryController> logger)
+        private readonly ICategoryCRUDService _categoryCRUDService;
+        public CategoryController(ILogger<CategoryController> logger, ICategoryCRUDService categoryCRUDService)
         {
             _logger = logger;
+            _categoryCRUDService = categoryCRUDService;
         }
-        //[HttpGet("getAll")]
-        //public ActionResult<IEnumerable<Category>> GetAll()
-        //{
-        //    //return TESTDATA.categories;
-        //}
-        //[HttpGet("get")]
-        //public ActionResult<IEnumerable<Category>> GetByName([FromQuery]string? name)
-        //{
-        //    if(string.IsNullOrEmpty(name))
-        //    {
-        //        return RedirectToAction(nameof(GetAll));
-        //    }
-        //    HttpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        //    return new List<Category> { new Category { CategoryId = Guid.NewGuid(), Name = name, Vat = 99 } };
-        //}
+        [HttpGet]
+        public ActionResult<IEnumerable<Category>> GetAll()
+        {
+            return Ok(_categoryCRUDService.GetAllCategories());
+        }
+        [HttpGet("/{name}")]
+        public ActionResult<Category> GetByName([FromRoute] string name)
+        {
+            return Ok(_categoryCRUDService.GetCategoryByName(name));
+        }
+        [HttpDelete("/{name}")]
+        public ActionResult DeleteByName([FromRoute]string name)
+        {
+            _categoryCRUDService.DeleteCategoryByName(name);
+            return Ok();
+        }
+        [HttpPost]
+        public ActionResult AddNewCategory([FromBody] CategoryDTO category)
+        {
+            _categoryCRUDService.AddNewCategory(category);
+            return Ok();
+        }
+        [HttpPatch("/{name}")]
+        public ActionResult EditCategory([FromRoute]string name, [FromQuery]int newVat)
+        {
+            _categoryCRUDService.UpdateCategoryVat(name, newVat);
+            return Ok();
+        }
     }
 }
