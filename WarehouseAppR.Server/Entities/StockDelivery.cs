@@ -12,12 +12,11 @@ namespace WarehouseAppR.Server.Models
         [Required]
         [ForeignKey(nameof(WarehouseAppR.Server.Models.Product))]
         public Guid ProductId { get; set; }
-        public virtual Product Product { get; set; }
+        public virtual Product? Product { get; set; }
         [Required]
         public required string Series { get; set; }
         [Required]
         public int Quantity { get; set; }
-        [Required]
         [DataType(DataType.Date)]
         public DateOnly ExpirationDate { get; set; }
     }

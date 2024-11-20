@@ -11,12 +11,12 @@ namespace WarehouseAppR.Server.Models
         [Required]
         [ForeignKey(nameof(WarehouseAppR.Server.Models.Manufacturer))]
         public Guid ManufacturerId { get; set; }
-        public virtual Manufacturer Manufacturer { get; set; }  // Nawigacja do Manufacturer
+        public virtual Manufacturer? Manufacturer { get; set; }  // Nawigacja do Manufacturer
         [Required]
 
         [ForeignKey(nameof(WarehouseAppR.Server.Models.Category))]
         public Guid CategoryId { get; set; }
-        public virtual Category Category { get; set; } // Nawigacja do Category
+        public virtual Category? Category { get; set; } // Nawigacja do Category
         [Required]
         public required string Name { get; set; }
         [Required]

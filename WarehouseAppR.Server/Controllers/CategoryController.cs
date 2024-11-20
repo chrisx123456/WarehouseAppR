@@ -6,7 +6,7 @@ using WarehouseAppR.Server.Models;
 namespace WarehouseAppR.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
         private readonly ILogger<CategoryController> _logger;
@@ -17,12 +17,12 @@ namespace WarehouseAppR.Server.Controllers
             _categoryCRUDService = categoryCRUDService;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<Category>> GetAll()
+        public ActionResult<IEnumerable<CategoryDTO>> GetAll()
         {
             return Ok(_categoryCRUDService.GetAllCategories());
         }
         [HttpGet("/{name}")]
-        public ActionResult<Category> GetByName([FromRoute] string name)
+        public ActionResult<CategoryDTO> GetByName([FromRoute] string name)
         {
             return Ok(_categoryCRUDService.GetCategoryByName(name));
         }
@@ -30,7 +30,7 @@ namespace WarehouseAppR.Server.Controllers
         public ActionResult DeleteByName([FromRoute]string name)
         {
             _categoryCRUDService.DeleteCategoryByName(name);
-            return Ok();
+            return NoContent();
         }
         [HttpPost]
         public ActionResult AddNewCategory([FromBody] CategoryDTO category)

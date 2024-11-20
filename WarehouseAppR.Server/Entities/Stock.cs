@@ -17,7 +17,6 @@ namespace WarehouseAppR.Server.Models
         public required string Series {  get; set; }
         [Required]
         public int Quantity { get; set; }
-        [Required]
         [DataType(DataType.Date)]
         public DateOnly ExpirationDate { get; set; }
         [Required]

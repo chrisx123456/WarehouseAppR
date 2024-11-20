@@ -1,5 +1,6 @@
 using WarehouseAppR.Server;
 using WarehouseAppR.Server.Interfaces;
+using WarehouseAppR.Server.Middleware;
 using WarehouseAppR.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<WarehouseDbContext>(); //DI dla DB
 builder.Services.AddScoped<DataSeeder>();
 builder.Services.AddScoped<ICategoryCRUDService, CategoryCRUDService>();
+builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
@@ -34,6 +37,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
