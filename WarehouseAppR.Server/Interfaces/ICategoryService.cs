@@ -4,7 +4,7 @@ using WarehouseAppR.Server.Models;
 
 namespace WarehouseAppR.Server.Interfaces
 {
-    public interface ICategoryCRUDService
+    public interface ICategoryService
     {
         public IEnumerable<CategoryDTO> GetAllCategories();
         public IEnumerable<CategoryDTO> GetCategoryByName(string name);

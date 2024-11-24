@@ -12,8 +12,8 @@ using WarehouseAppR.Server;
 namespace WarehouseAppR.Server.Migrations
 {
     [DbContext(typeof(WarehouseDbContext))]
-    [Migration("20241119170143_StockDateNotReq")]
-    partial class StockDateNotReq
+    [Migration("20241124204622_Init2")]
+    partial class Init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,6 +66,10 @@ namespace WarehouseAppR.Server.Migrations
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Ean")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ManufacturerId")
                         .HasColumnType("uniqueidentifier");
@@ -157,7 +161,10 @@ namespace WarehouseAppR.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly>("ExpirationDate")
+                    b.Property<int>("AcceptorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("DateDelivered")
                         .HasColumnType("date");
 
                     b.Property<Guid>("ProductId")
@@ -175,28 +182,6 @@ namespace WarehouseAppR.Server.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("StockDeliveries");
-                });
-
-            modelBuilder.Entity("WarehouseAppR.Server.Models.StockDeliveryDetail", b =>
-                {
-                    b.Property<Guid>("StockDeliveryDetailId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("AcceptorId")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly>("DateDelivered")
-                        .HasColumnType("date");
-
-                    b.Property<Guid>("StockDeliveryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("StockDeliveryDetailId");
-
-                    b.HasIndex("StockDeliveryId");
-
-                    b.ToTable("StockDeliveriesDetailes");
                 });
 
             modelBuilder.Entity("WarehouseAppR.Server.Models.Product", b =>
@@ -249,17 +234,6 @@ namespace WarehouseAppR.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("WarehouseAppR.Server.Models.StockDeliveryDetail", b =>
-                {
-                    b.HasOne("WarehouseAppR.Server.Models.StockDelivery", "StockDelivery")
-                        .WithMany()
-                        .HasForeignKey("StockDeliveryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("StockDelivery");
                 });
 
             modelBuilder.Entity("WarehouseAppR.Server.Models.Manufacturer", b =>

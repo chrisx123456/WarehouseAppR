@@ -15,8 +15,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<WarehouseDbContext>(); //DI dla DB
 builder.Services.AddScoped<DataSeeder>();
-builder.Services.AddScoped<ICategoryCRUDService, CategoryCRUDService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddScoped<IManufacturersService, ManufacturerService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();

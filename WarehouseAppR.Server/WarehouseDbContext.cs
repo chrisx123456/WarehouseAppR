@@ -13,7 +13,6 @@ namespace WarehouseAppR.Server
         public DbSet<Sale> Sales { get; set; }
         public DbSet<Stock> InStock { get; set; }
         public DbSet<StockDelivery> StockDeliveries { get; set; }
-        public DbSet<StockDeliveryDetail> StockDeliveriesDetailes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

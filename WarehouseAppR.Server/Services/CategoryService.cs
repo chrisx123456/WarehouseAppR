@@ -8,24 +8,25 @@ using WarehouseAppR.Server.Models;
 
 namespace WarehouseAppR.Server.Services
 {
-    public class CategoryCRUDService : ICategoryCRUDService
+    public class CategoryService : ICategoryService
     {
         private readonly WarehouseDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public CategoryCRUDService(WarehouseDbContext dbContext, IMapper mapper)
+        public CategoryService(WarehouseDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
         }
         public void AddNewCategory(CategoryDTO category)
         {
-            var item = _dbContext.Categories.FirstOrDefault(c => c.Name == category.Name);
+            var item = _dbContext.Categories.FirstOrDefault(c => c.Name.ToLower() == category.Name.ToLower());
             if (item is not null)
             {
-                new ItemAlreadyExistsException("Such category already exists");
+                throw new ItemAlreadyExistsException("Such category already exists");
             }
-            _dbContext.Categories.Add(new Category { Name = category.Name, Vat = category.Vat });
+            //_dbContext.Categories.Add(new Category { Name = category.Name, Vat = category.Vat });
+            _dbContext.Categories.Add(_mapper.Map<Category>(category));
             _dbContext.SaveChanges();
         }
 

@@ -10,18 +10,18 @@ namespace WarehouseAppR.Server.Models
         [Key]
         public Guid SaleId { get; set; }
         [Required]
-        public int UserId { get; set; }
+        public required int UserId { get; set; }
         [Required]
         [ForeignKey(nameof(WarehouseAppR.Server.Models.Product))]
-        public Guid ProductId { get; set; }
-        public virtual Product Product { get; set; }
+        public required Guid ProductId { get; set; }
+        public virtual Product? Product { get; set; }
         [Required]
-        public decimal Quantity { get; set; }
+        public required decimal Quantity { get; set; }
         [Required]
-        public decimal Price { get; set; }
+        public required decimal Price { get; set; }
         [Required]
         [DataType(DataType.Date)]
-        public DateOnly Date { get; set; }
+        public required DateOnly Date { get; set; }
 
     }
 }

@@ -1,0 +1,20 @@
+﻿using AutoMapper;
+using WarehouseAppR.Server.Exceptions;
+using WarehouseAppR.Server.Models;
+
+namespace WarehouseAppR.Server.Resolvers
+{
+    public class ManufacturerIdResolver : IValueResolver<ProductDTO, Product, Guid>
+    {
+        private readonly WarehouseDbContext _dbContext;
+        public ManufacturerIdResolver(WarehouseDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+        public Guid Resolve(ProductDTO source, Product destination, Guid destMember, ResolutionContext context)
+        {
+            return _dbContext.Manufacturers.FirstOrDefault(m => m.Name.ToLower() == source.ManufacturerName.ToLower())?.ManufacturerId 
+                ?? throw new NotFoundException("No such manufacturer foung while mapping");
+        }
+    }
+}

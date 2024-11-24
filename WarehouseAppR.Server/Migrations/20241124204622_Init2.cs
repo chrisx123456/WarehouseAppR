@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WarehouseAppR.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Init2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,7 +46,8 @@ namespace WarehouseAppR.Server.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TradeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UnitType = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Ean = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,7 +118,8 @@ namespace WarehouseAppR.Server.Migrations
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Series = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    ExpirationDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    DateDelivered = table.Column<DateOnly>(type: "date", nullable: false),
+                    AcceptorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -127,26 +129,6 @@ namespace WarehouseAppR.Server.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StockDeliveriesDetailes",
-                columns: table => new
-                {
-                    StockDeliveryDetailId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StockDeliveryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateDelivered = table.Column<DateOnly>(type: "date", nullable: false),
-                    AcceptorId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StockDeliveriesDetailes", x => x.StockDeliveryDetailId);
-                    table.ForeignKey(
-                        name: "FK_StockDeliveriesDetailes_StockDeliveries_StockDeliveryId",
-                        column: x => x.StockDeliveryId,
-                        principalTable: "StockDeliveries",
-                        principalColumn: "StockDeliveryId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -174,11 +156,6 @@ namespace WarehouseAppR.Server.Migrations
                 name: "IX_StockDeliveries_ProductId",
                 table: "StockDeliveries",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockDeliveriesDetailes_StockDeliveryId",
-                table: "StockDeliveriesDetailes",
-                column: "StockDeliveryId");
         }
 
         /// <inheritdoc />
@@ -189,9 +166,6 @@ namespace WarehouseAppR.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "Sales");
-
-            migrationBuilder.DropTable(
-                name: "StockDeliveriesDetailes");
 
             migrationBuilder.DropTable(
                 name: "StockDeliveries");

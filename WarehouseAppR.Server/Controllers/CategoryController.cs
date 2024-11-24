@@ -10,8 +10,8 @@ namespace WarehouseAppR.Server.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ILogger<CategoryController> _logger;
-        private readonly ICategoryCRUDService _categoryCRUDService;
-        public CategoryController(ILogger<CategoryController> logger, ICategoryCRUDService categoryCRUDService)
+        private readonly ICategoryService _categoryCRUDService;
+        public CategoryController(ILogger<CategoryController> logger, ICategoryService categoryCRUDService)
         {
             _logger = logger;
             _categoryCRUDService = categoryCRUDService;
@@ -21,12 +21,12 @@ namespace WarehouseAppR.Server.Controllers
         {
             return Ok(_categoryCRUDService.GetAllCategories());
         }
-        [HttpGet("/{name}")]
+        [HttpGet("{name}")]
         public ActionResult<CategoryDTO> GetByName([FromRoute] string name)
         {
             return Ok(_categoryCRUDService.GetCategoryByName(name));
         }
-        [HttpDelete("/{name}")]
+        [HttpDelete("{name}")]
         public ActionResult DeleteByName([FromRoute]string name)
         {
             _categoryCRUDService.DeleteCategoryByName(name);
@@ -38,7 +38,7 @@ namespace WarehouseAppR.Server.Controllers
             _categoryCRUDService.AddNewCategory(category);
             return Ok();
         }
-        [HttpPatch("/{name}")]
+        [HttpPatch("{name}")]
         public ActionResult EditCategory([FromRoute]string name, [FromQuery]int newVat)
         {
             _categoryCRUDService.UpdateCategoryVat(name, newVat);

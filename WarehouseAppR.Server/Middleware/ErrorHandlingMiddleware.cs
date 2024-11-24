@@ -21,7 +21,7 @@ namespace WarehouseAppR.Server.Middleware
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 await context.Response.WriteAsync(ex.Message);
             }
-            catch (Exception ex)
+            catch
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await context.Response.WriteAsync("Something went wrong");

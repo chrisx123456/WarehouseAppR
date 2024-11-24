@@ -11,6 +11,6 @@ namespace WarehouseAppR.Server.Models
         [Required]
         public required string Name { get; set; }
         [Required]
-        public int Vat { get; set; }
+        public required int Vat { get; set; }
     }
 }
