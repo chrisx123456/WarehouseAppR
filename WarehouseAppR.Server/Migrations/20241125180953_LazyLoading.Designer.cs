@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WarehouseAppR.Server;
 
@@ -11,9 +12,11 @@ using WarehouseAppR.Server;
 namespace WarehouseAppR.Server.Migrations
 {
     [DbContext(typeof(WarehouseDbContext))]
-    partial class WarehouseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241125180953_LazyLoading")]
+    partial class LazyLoading
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,9 +69,6 @@ namespace WarehouseAppR.Server.Migrations
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Ean")
                         .IsRequired()

@@ -14,7 +14,7 @@ namespace WarehouseAppR.Server.Resolvers
         public Guid Resolve(ProductDTO source, Product destination, Guid destMember, ResolutionContext context)
         {
             return _dbContext.Manufacturers.FirstOrDefault(m => m.Name.ToLower() == source.ManufacturerName.ToLower())?.ManufacturerId 
-                ?? throw new NotFoundException("No such manufacturer foung while mapping");
+                ?? throw new NotFoundException("No such manufacturer found while mapping");
         }
     }
 }

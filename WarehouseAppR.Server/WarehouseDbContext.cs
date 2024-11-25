@@ -17,6 +17,7 @@ namespace WarehouseAppR.Server
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_connectionString);
+            optionsBuilder.UseLazyLoadingProxies();
         }
     }
 }

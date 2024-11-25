@@ -1,4 +1,5 @@
 ﻿
+using AutoMapper;
 using WarehouseAppR.Server.Exceptions;
 
 namespace WarehouseAppR.Server.Middleware
@@ -21,10 +22,21 @@ namespace WarehouseAppR.Server.Middleware
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 await context.Response.WriteAsync(ex.Message);
             }
-            catch
+            catch(AutoMapperMappingException ex)
+            {
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                await context.Response.WriteAsync(ex.InnerException?.Message ?? "Something went wrong");
+
+            }
+            catch (Exception ex)
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+#if DEBUG
+                await context.Response.WriteAsync(ex.Message);
+#endif
+#if !DEBUG
                 await context.Response.WriteAsync("Something went wrong");
+#endif
             }
         }
     }

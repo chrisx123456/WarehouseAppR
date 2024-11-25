@@ -20,5 +20,6 @@ namespace WarehouseAppR.Server.Models
         [Required]
         [StringLength813]
         public required string Ean { get; set; }
+        public string? Description { get; set; }
     }
 }

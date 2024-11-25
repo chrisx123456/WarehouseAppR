@@ -11,14 +11,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-
 builder.Services.AddDbContext<WarehouseDbContext>(); //DI dla DB
 builder.Services.AddScoped<DataSeeder>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IManufacturersService, ManufacturerService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 
 var app = builder.Build();
 

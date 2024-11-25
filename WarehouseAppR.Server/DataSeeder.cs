@@ -55,7 +55,7 @@ namespace WarehouseAppR.Server
                     TradeName = "GoldApple",
                     Price = 1.49M,
                     UnitType = Units.Kg,
-                    Ean = "13452134"
+                    Ean = "12345678"
                 },
                 new Product
                 {
@@ -65,7 +65,7 @@ namespace WarehouseAppR.Server
                     TradeName = "SuperPencil",
                     Price = 5.23M,
                     UnitType = Units.Qt,
-                    Ean = "123413"
+                    Ean = "123456789012"
                 }
             };
         }
