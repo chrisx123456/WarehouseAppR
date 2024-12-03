@@ -16,39 +16,39 @@ namespace WarehouseAppR.Server.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ProductDTO>> GetAllProducts()
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
         {
-            var products = _productService.GetAllProducts();
+            var products = await _productService.GetAllProducts();
             return Ok(products);
         }
         [HttpGet("{ean}")]
-        public ActionResult<ProductDTO> GetProductByEan([FromRoute]string ean)
+        public async Task<ActionResult<ProductDTO>> GetProductByEan([FromRoute]string ean)
         {
-            var product = _productService.GetProductByEan(ean);
+            var product = await _productService.GetProductByEan(ean);
             return Ok(product);
         }
         [HttpPost]
-        public ActionResult AddNewProduct([FromBody] ProductDTO productDto)
+        public async Task<ActionResult> AddNewProduct([FromBody] ProductDTO productDto)
         {
-            _productService.AddNewProduct(productDto);
+            await _productService.AddNewProduct(productDto);
             return Ok();
         }
         [HttpPatch("{ean}")]
-        public ActionResult UpdateProductPrice([FromRoute]string ean, [FromQuery]decimal newPrice)
+        public async Task<ActionResult> UpdateProductPrice([FromRoute]string ean, [FromQuery]decimal newPrice)
         {
-            _productService.UpdateProductPrice(ean, newPrice);
+            await _productService.UpdateProductPrice(ean, newPrice);
             return Ok();
         }
         [HttpDelete("{ean}")]
-        public ActionResult DeleteProduct([FromRoute]string ean)
+        public async Task<ActionResult> DeleteProduct([FromRoute]string ean)
         {
-            _productService.DeleteProductByEan(ean);
+            await _productService.DeleteProductByEan(ean);
             return Ok();
         }
         [HttpPatch("description/{ean}")]
-        public ActionResult UpdateDescription([FromBody] DescriptionDTO desc, [FromRoute]string ean)
+        public async Task<ActionResult> UpdateDescription([FromBody] DescriptionDTO desc, [FromRoute]string ean)
         {
-            _productService.UpdateDescription(ean, desc.Description);
+            await _productService.UpdateDescription(ean, desc.Description);
             return Ok();
         }
 

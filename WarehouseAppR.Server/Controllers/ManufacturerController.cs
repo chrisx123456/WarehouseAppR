@@ -15,25 +15,25 @@ namespace WarehouseAppR.Server.Controllers
             _manufacturerCRUDService = manufacturerCRUDService;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<ManufacturerDTO>> GetAll()
+        public async Task<ActionResult<IEnumerable<ManufacturerDTO>>> GetAll()
         {
-            return Ok(_manufacturerCRUDService.GetAllManufacturers());
+            return Ok(await _manufacturerCRUDService.GetAllManufacturers());
         }
         [HttpGet("{name}")]
-        public ActionResult<ManufacturerDTO> GetByName([FromRoute] string name)
+        public async Task<ActionResult<ManufacturerDTO>> GetByName([FromRoute] string name)
         {
-            return Ok(_manufacturerCRUDService.GetManufacturerByName(name));
+            return Ok(await _manufacturerCRUDService.GetManufacturerByName(name));
         }
         [HttpDelete("{name}")]
-        public ActionResult Delete([FromRoute] string name)
+        public async Task<ActionResult> Delete([FromRoute] string name)
         {
-            _manufacturerCRUDService.DeleteManufacturerByName(name);
+            await _manufacturerCRUDService.DeleteManufacturerByName(name);
             return NoContent();
         }
         [HttpPost]
-        public ActionResult AddNew([FromBody] ManufacturerDTO manufacturer)
+        public async Task<ActionResult> AddNew([FromBody] ManufacturerDTO manufacturer)
         {
-            _manufacturerCRUDService.AddNewManufacturer(manufacturer);
+            await _manufacturerCRUDService.AddNewManufacturer(manufacturer);
             return Ok();
         }
 

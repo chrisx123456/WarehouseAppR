@@ -17,31 +17,31 @@ namespace WarehouseAppR.Server.Controllers
             _categoryCRUDService = categoryCRUDService;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<CategoryDTO>> GetAll()
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAll()
         {
-            return Ok(_categoryCRUDService.GetAllCategories());
+            return Ok(await _categoryCRUDService.GetAllCategories());
         }
         [HttpGet("{name}")]
-        public ActionResult<CategoryDTO> GetByName([FromRoute] string name)
+        public async Task<ActionResult<CategoryDTO>> GetByName([FromRoute] string name)
         {
-            return Ok(_categoryCRUDService.GetCategoryByName(name));
+            return Ok(await _categoryCRUDService.GetCategoryByName(name));
         }
         [HttpDelete("{name}")]
-        public ActionResult DeleteByName([FromRoute]string name)
+        public async Task<ActionResult> DeleteByName([FromRoute]string name)
         {
-            _categoryCRUDService.DeleteCategoryByName(name);
+            await _categoryCRUDService.DeleteCategoryByName(name);
             return NoContent();
         }
         [HttpPost]
-        public ActionResult AddNewCategory([FromBody] CategoryDTO category)
+        public async Task<ActionResult> AddNewCategory([FromBody] CategoryDTO category)
         {
-            _categoryCRUDService.AddNewCategory(category);
+            await _categoryCRUDService.AddNewCategory(category);
             return Ok();
         }
         [HttpPatch("{name}")]
-        public ActionResult EditCategory([FromRoute]string name, [FromQuery]int newVat)
+        public async Task<ActionResult> EditCategory([FromRoute]string name, [FromQuery]int newVat)
         {
-            _categoryCRUDService.UpdateCategoryVat(name, newVat);
+            await _categoryCRUDService.UpdateCategoryVat(name, newVat);
             return Ok();
         }
     }

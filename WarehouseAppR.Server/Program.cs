@@ -12,26 +12,31 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<WarehouseDbContext>(); //DI dla DB
-builder.Services.AddScoped<DataSeeder>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IManufacturersService, ManufacturerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IStockDeliveryService, StockDeliveryService>();
+builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+
+#if DEBUG
+builder.Services.AddScoped<DataSeeder>();
+#endif
 
 var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+#if DEBUG
 using(var serviceScope = app.Services.CreateScope())
 {
     var services = serviceScope.ServiceProvider;
     services.GetRequiredService<DataSeeder>().Seed();
-    
 }
+#endif
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
