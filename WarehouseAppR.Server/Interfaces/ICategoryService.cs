@@ -6,10 +6,10 @@ namespace WarehouseAppR.Server.Interfaces
 {
     public interface ICategoryService
     {
-        public IEnumerable<CategoryDTO> GetAllCategories();
-        public IEnumerable<CategoryDTO> GetCategoryByName(string name);
-        public void DeleteCategoryByName(string name);
-        public void AddNewCategory(CategoryDTO category);
-        public void UpdateCategoryVat(string name, int newVat);
+        public Task<IEnumerable<CategoryDTO>> GetAllCategories();
+        public Task<IEnumerable<CategoryDTO>> GetCategoryByName(string name);
+        public Task DeleteCategoryByName(string name);
+        public Task AddNewCategory(CategoryDTO category);
+        public Task UpdateCategoryVat(string name, int newVat);
     }
 }

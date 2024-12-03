@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using NLog.LayoutRenderers;
 using WarehouseAppR.Server.Exceptions;
 using WarehouseAppR.Server.Interfaces;
@@ -15,70 +16,70 @@ namespace WarehouseAppR.Server.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public void AddNewProduct(ProductDTO productDto)
+        public async Task AddNewProduct(ProductDTO productDto)
         {
-            var product = GetByEan(productDto.Ean);
+            var product = await GetByEan(productDto.Ean);
             if (product is not null) throw new ItemAlreadyExistsException($"Product with ean {productDto.Ean} exists");
             var productToAdd = _mapper.Map<Product>(productDto);
-            _dbContext.Products.Add(productToAdd);
-            _dbContext.SaveChanges();
+            await _dbContext.Products.AddAsync(productToAdd);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void DeleteProductByEan(string ean)
+        public async Task DeleteProductByEan(string ean)
         {
-            var product = GetByEan(ean);
+            var product = await GetByEan(ean);
             if (product is null) throw new NotFoundException($"Product with ean {ean} does not exists");
             _dbContext.Products.Remove(product);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
-        public IEnumerable<ProductDTO> GetAllProducts()
+        public async Task<IEnumerable<ProductDTO>> GetAllProducts()
         {
-            var products = _dbContext.Products.ToList();
+            var products = await _dbContext.Products.ToListAsync();
             var productsDto = _mapper.Map<List<ProductDTO>>(products);
             return productsDto;
         }
 
-        public ProductDTO GetProductByEan(string ean)
+        public async Task<ProductDTO> GetProductByEan(string ean)
         {
-            var product = GetByEan(ean);
+            var product = await GetByEan(ean);
             if (product is null) throw new NotFoundException($"Product with ean {ean} does not exists");
             var productDto = _mapper.Map<ProductDTO>(product);
             return productDto;
         }
         
-        public IEnumerable<ProductDTO> GetProductsByName(string name)
+        public async Task<IEnumerable<ProductDTO>> GetProductsByName(string name)
         {
-            var products = _dbContext.Products.Where(p => p.Name.ToLower().Contains(name.ToLower())).ToList();
+            var products = await _dbContext.Products.Where(p => p.Name.ToLower().Contains(name.ToLower())).ToListAsync();
             var productsDtos = _mapper.Map<List<ProductDTO>>(products);
             return productsDtos;
         }
 
-        public IEnumerable<ProductDTO> GetProductsByTradeName(string tradeName)
+        public async Task<IEnumerable<ProductDTO>> GetProductsByTradeName(string tradeName)
         {
-            var products = _dbContext.Products.Where(p => p.TradeName.ToLower().Contains(tradeName.ToLower())).ToList();
+            var products = await _dbContext.Products.Where(p => p.TradeName.ToLower().Contains(tradeName.ToLower())).ToListAsync();
             var productsDtos = _mapper.Map<List<ProductDTO>>(products);
             return productsDtos;
         }
 
-        public void UpdateDescription(string ean, string? description)
+        public async Task UpdateDescription(string ean, string? description)
         {
-            var product = GetByEan(ean);
+            var product = await GetByEan(ean);
             if (product is null) throw new NotFoundException($"Product with ean {ean} does not exists");
             product.Description = description ?? "";
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void UpdateProductPrice(string ean, decimal newPrice)
+        public async Task UpdateProductPrice(string ean, decimal newPrice)
         {
-            var product = GetByEan(ean);
+            var product = await GetByEan(ean);
             if(product is null) throw new NotFoundException($"Product with ean {ean} does not exists");
             product.Price = newPrice;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
-        private Product? GetByEan(string ean) 
+        private async Task<Product?> GetByEan(string ean) 
         {
-            return _dbContext.Products.FirstOrDefault(p => p.Ean.ToLower() == ean.ToLower());
+            return await _dbContext.Products.FirstOrDefaultAsync(p => p.Ean.ToLower() == ean.ToLower());
         }
     }
 }

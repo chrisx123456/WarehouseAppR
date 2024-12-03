@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WarehouseAppR.Server.DTOs;
 using WarehouseAppR.Server.Exceptions;
 using WarehouseAppR.Server.Interfaces;
@@ -15,39 +16,39 @@ namespace WarehouseAppR.Server.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public void AddNewManufacturer(ManufacturerDTO manufacturer)
+        public async Task AddNewManufacturer(ManufacturerDTO manufacturer)
         {
-            var item = _dbContext.Manufacturers.FirstOrDefault(m => m.Name.ToLower() == manufacturer.Name.ToLower());
+            var item = await _dbContext.Manufacturers.FirstOrDefaultAsync(m => m.Name.ToLower() == manufacturer.Name.ToLower());
             if (item is not null)
             {
                 throw new ItemAlreadyExistsException("Such manufacturer already exists");
             }
-            _dbContext.Manufacturers.Add(_mapper.Map<Manufacturer>(manufacturer));
-            _dbContext.SaveChanges();
+            await _dbContext.Manufacturers.AddAsync(_mapper.Map<Manufacturer>(manufacturer));
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void DeleteManufacturerByName(string name)
+        public async Task DeleteManufacturerByName(string name)
         {
-            var toDelete = _dbContext.Manufacturers.SingleOrDefault(m => m.Name == name);
+            var toDelete = await _dbContext.Manufacturers.SingleOrDefaultAsync(m => m.Name == name);
             if (toDelete is null)
             {
                 throw new NotFoundException("No manufacturer with such name");
             }
 
             _dbContext.Manufacturers.Remove(toDelete);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
-        public IEnumerable<ManufacturerDTO> GetAllManufacturers()
+        public async Task<IEnumerable<ManufacturerDTO>> GetAllManufacturers()
         {
-            var manufacturers = _dbContext.Manufacturers.ToList();
+            var manufacturers = _dbContext.Manufacturers.ToListAsync();
             var manufacturersDtos = _mapper.Map<List<ManufacturerDTO>>(manufacturers);
             return manufacturersDtos;
         }
 
-        public IEnumerable<ManufacturerDTO> GetManufacturerByName(string name)
+        public async Task<IEnumerable<ManufacturerDTO>> GetManufacturerByName(string name)
         {
-            var manufacturers = _dbContext.Manufacturers.Where(m => m.Name.ToLower().Contains(name.ToLower())).ToList();
+            var manufacturers = await _dbContext.Manufacturers.Where(m => m.Name.ToLower().Contains(name.ToLower())).ToListAsync();
             if (!manufacturers.Any()) throw new NotFoundException("No manufacturer with such name");
             var manufacturersDtos = _mapper.Map<List<ManufacturerDTO>>(manufacturers);
             return manufacturersDtos;

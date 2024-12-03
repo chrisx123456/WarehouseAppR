@@ -10,22 +10,23 @@ namespace WarehouseAppR.Server.Services
         {
              _dbContext = dbContext;
         }
-        public void AddDelivery(StockDeliveryDTO delivery)
+
+        public Task AddDelivery(StockDeliveryDTO delivery)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<StockDeliveryDTO> GetAllDeliveries()
+        public Task<IEnumerable<StockDeliveryDTO>> GetAllDeliveries()
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<StockDeliveryDTO> GetDeliveriesByDate(DateOnly date)
+        public Task<IEnumerable<StockDeliveryDTO>> GetDeliveriesByDate(DateOnly date)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<StockDeliveryDTO> GetDeliveriesByEan(string ean)
+        public Task<IEnumerable<StockDeliveryDTO>> GetDeliveriesByEan(string ean)
         {
             throw new NotImplementedException();
         }
