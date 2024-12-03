@@ -33,7 +33,30 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.Price, c => c.MapFrom(src => src.Price))
                 .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Ean))
                 .ForMember(dest => dest.Description, c => c.MapFrom(src => src.Description));
-                
+
+            CreateMap<AddNewStockDeliveryDTO, StockDelivery>()
+                .ForMember(dest => dest.ProductId, c => c.MapFrom<ProductIdResolver>())
+                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+                .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.DateDelivered, c => c.MapFrom(src => src.DateDelivered))
+                .ForMember(dest => dest.AcceptorId, c => c.MapFrom(src => src.AcceptorId));
+
+            CreateMap<AddNewStockDeliveryDTO, Stock>()
+                .ForMember(dest => dest.ProductId, c => c.MapFrom<ProductIdResolver>())
+                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+                .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.ExpirationDate, c => c.MapFrom(src => src.ExpDate))
+                .ForMember(dest => dest.StorageLocationCode, c => c.MapFrom(src => src.StorageLocationCode));
+
+            CreateMap<StockDelivery, StockDeliveryDTO>()
+                .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Product.Ean))
+                .ForMember(dest => dest.TradeName, c => c.MapFrom(src => src.Product.TradeName))
+                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+                .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.DateDelivered, c => c.MapFrom(src => src.DateDelivered))
+                .ForMember(dest => dest.AcceptorId, c => c.MapFrom(src => src.AcceptorId));
+
+
         }
     }
 }

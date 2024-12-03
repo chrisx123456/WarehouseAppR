@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WarehouseAppR.Server.DataAnnotations;
 using WarehouseAppR.Server.Interfaces;
 using WarehouseAppR.Server.Models;
 
@@ -14,10 +15,29 @@ namespace WarehouseAppR.Server.Controllers
             _stockDeliveryService = stockDeliveryService;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<StockDeliveryDTO>> GetAllDeliveryies()
+        public async Task<ActionResult<IEnumerable<AddNewStockDeliveryDTO>>> GetAllDeliveries()
         {
-
-            return Ok();
+            var deliveries = await _stockDeliveryService.GetAllDeliveries();
+            return Ok(deliveries);
         }
+        [HttpGet("ean/{ean}")]
+        public async Task<ActionResult<IEnumerable<StockDeliveryDTO>>> GetDeliveriesByEan([FromRoute][Ean] string ean)
+        {
+            var deliveries = await _stockDeliveryService.GetDeliveriesByEan(ean);
+            return Ok(deliveries);
+        }
+        [HttpGet("date/{date}")]
+        public async Task<ActionResult<IEnumerable<StockDeliveryDTO>>> GetDeliveriesByDate([FromRoute]DateOnly date)
+        {
+            var deliveries = await _stockDeliveryService.GetDeliveriesByDate(date);
+            return Ok(deliveries);
+        }
+        [HttpPost]
+        public async Task<ActionResult> AddDelivery([FromBody] AddNewStockDeliveryDTO newStock)
+        {
+            await _stockDeliveryService.AddDelivery(newStock);
+            return NoContent();
+        }
+
     }
 }

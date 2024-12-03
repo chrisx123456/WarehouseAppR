@@ -10,7 +10,7 @@ namespace WarehouseAppR.Server.Interfaces
         public Task<IEnumerable<StockDeliveryDTO>> GetDeliveriesByDate(DateOnly date);
         ///public IEnumerable<StockDeliveryDTO> GetDeliveriesByAcceptor(DateOnly date);
 
-        public Task AddDelivery(StockDeliveryDTO delivery);
+        public Task AddDelivery(AddNewStockDeliveryDTO delivery);
         //Todo:
         // + Admin options: edit entities
         // + DeliveryDTO w. guid

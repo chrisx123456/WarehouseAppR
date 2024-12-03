@@ -27,7 +27,7 @@ namespace WarehouseAppR.Server.Models
         [Required]
         public required decimal Price { get; set; }
         [Required]
-        [StringLength813]
+        [Ean]
         public required string Ean {  get; set; }
         public string? Description { get; set; }
 

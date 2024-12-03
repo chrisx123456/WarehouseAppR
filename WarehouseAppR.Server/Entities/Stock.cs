@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WarehouseAppR.Server.Models
 {
@@ -18,7 +19,8 @@ namespace WarehouseAppR.Server.Models
         [Required]
         public required decimal Quantity { get; set; }
         [DataType(DataType.Date)]
-        public DateOnly ExpirationDate { get; set; }
+        [Required]
+        public required DateOnly? ExpirationDate { get; set; }
         [Required]
         public required string StorageLocationCode { get; set; }
 

@@ -17,6 +17,7 @@ builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IManufacturersService, ManufacturerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IStockDeliveryService, StockDeliveryService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
