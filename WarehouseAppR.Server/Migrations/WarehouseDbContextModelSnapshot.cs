@@ -220,7 +220,7 @@ namespace WarehouseAppR.Server.Migrations
             modelBuilder.Entity("WarehouseAppR.Server.Models.Stock", b =>
                 {
                     b.HasOne("WarehouseAppR.Server.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("Available")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -231,7 +231,7 @@ namespace WarehouseAppR.Server.Migrations
             modelBuilder.Entity("WarehouseAppR.Server.Models.StockDelivery", b =>
                 {
                     b.HasOne("WarehouseAppR.Server.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("StockDeliveries")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -242,6 +242,13 @@ namespace WarehouseAppR.Server.Migrations
             modelBuilder.Entity("WarehouseAppR.Server.Models.Manufacturer", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Product", b =>
+                {
+                    b.Navigation("Available");
+
+                    b.Navigation("StockDeliveries");
                 });
 #pragma warning restore 612, 618
         }

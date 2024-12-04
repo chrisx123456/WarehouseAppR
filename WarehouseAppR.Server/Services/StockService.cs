@@ -30,8 +30,10 @@ namespace WarehouseAppR.Server.Services
 
         }
 
-        public Task<IEnumerable<StockDTO>> GetInStockByEan(string ean)
+        public async Task<IEnumerable<StockDTO>> GetInStockByEan(string ean)
         {
+            var product = await _dbContext.Products.SingleOrDefaultAsync(p => p.Ean.Equals(ean));
+            var inStock = product?.Available;
             throw new NotImplementedException();
         }
 

@@ -31,6 +31,9 @@ namespace WarehouseAppR.Server.Models
         public required string Ean {  get; set; }
         public string? Description { get; set; }
 
+        public virtual List<StockDelivery>? StockDeliveries { get; set; }
+        public virtual List<Stock>? Available { get; set; }
+
 
     }
 }
