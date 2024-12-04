@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WarehouseAppR.Server.Interfaces;
 using WarehouseAppR.Server.Models;
 
@@ -15,12 +16,18 @@ namespace WarehouseAppR.Server.Services
         }
         public Task DecreaseInStockQuantity(string ean, decimal count)
         {
+            
+
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<StockDTO>> GetAllInStock()
+        public async Task<IEnumerable<StockDTO>> GetAllInStock()
         {
+            //var allInStock = await _dbContext.InStock.ToListAsync();
+            //var allInStock
+            //return allInStock;
             throw new NotImplementedException();
+
         }
 
         public Task<IEnumerable<StockDTO>> GetInStockByEan(string ean)

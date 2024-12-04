@@ -21,6 +21,13 @@ namespace WarehouseAppR.Server.Controllers
             var products = await _productService.GetAllProducts();
             return Ok(products);
         }
+        [HttpGet("name/{name}")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProductByName([FromRoute]string name)
+        {
+            var products = await _productService.GetProductsByName(name);
+            return Ok(products);
+        }
+        
         [HttpGet("{ean}")]
         public async Task<ActionResult<ProductDTO>> GetProductByEan([FromRoute]string ean)
         {

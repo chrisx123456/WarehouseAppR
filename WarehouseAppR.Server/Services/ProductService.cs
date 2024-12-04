@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using NLog.LayoutRenderers;
 using WarehouseAppR.Server.Exceptions;
 using WarehouseAppR.Server.Interfaces;
 using WarehouseAppR.Server.Models;
@@ -47,12 +46,16 @@ namespace WarehouseAppR.Server.Services
             var productDto = _mapper.Map<ProductDTO>(product);
             return productDto;
         }
-        
+        // bd -> server -> klient(strona)
         public async Task<IEnumerable<ProductDTO>> GetProductsByName(string name)
         {
-            var products = await _dbContext.Products.Where(p => p.Name.ToLower().Contains(name.ToLower())).ToListAsync();
+            var products = await _dbContext.Products.Where(p => p.Name.ToLower().Contains(name.ToLower())).ToListAsync(); //Materialization Lookup: LINQ to Entities
+            //this is LINQ to Objects
             var productsDtos = _mapper.Map<List<ProductDTO>>(products);
             return productsDtos;
+            //var productsQueries = _dbContext.Products.Where(p => p.Name.ToLower().Contains(name.ToLower()));
+            //string debug = productsQueries.ToQueryString();
+            //return null;
         }
 
         public async Task<IEnumerable<ProductDTO>> GetProductsByTradeName(string tradeName)

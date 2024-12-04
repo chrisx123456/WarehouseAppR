@@ -10,23 +10,17 @@ namespace WarehouseAppR.Server.Services
     {
         private readonly WarehouseDbContext _dbContext;
         private readonly IMapper _mapper;
-        public StockDeliveryService(WarehouseDbContext dbContext, IMapper mapper)
+        private readonly IStockAndStockDeliveryService _stockAndDeliveryService;
+        public StockDeliveryService(WarehouseDbContext dbContext, IMapper mapper, IStockAndStockDeliveryService stockAndStockDeliveryService)
         {
              _dbContext = dbContext;
             _mapper = mapper;
+            _stockAndDeliveryService = stockAndStockDeliveryService;
         }
 
         public async Task AddDelivery(AddNewStockDeliveryDTO newdelivery)
         {
-            var delivery = await _dbContext.StockDeliveries.SingleOrDefaultAsync(d => d.Series == newdelivery.Series);
-            if (delivery is not null) throw new ItemAlreadyExistsException("Delivery with such series was accepted before");
-            Stock stock = _mapper.Map<Stock>(newdelivery);
-            StockDelivery stockDelivery = _mapper.Map<StockDelivery>(newdelivery);
-            await _dbContext.InStock.AddAsync(stock);
-            await _dbContext.StockDeliveries.AddAsync(stockDelivery);
-            await _dbContext.SaveChangesAsync();
-            //Stock and StockDel. are pretty much same tables, but StockDel is mostly for info purpose.
-            //Adding both stockdelivery and stock because when you accept delivery it means it is in-stock.
+            await _stockAndDeliveryService.AddDelivery(newdelivery);
         }
 
         public async Task<IEnumerable<StockDeliveryDTO>> GetAllDeliveries()

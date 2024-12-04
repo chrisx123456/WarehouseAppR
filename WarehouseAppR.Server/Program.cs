@@ -18,6 +18,7 @@ builder.Services.AddScoped<IManufacturersService, ManufacturerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IStockDeliveryService, StockDeliveryService>();
 builder.Services.AddScoped<IStockService, StockService>();
+builder.Services.AddScoped<IStockAndStockDeliveryService, StockAndStockDeliveryService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
