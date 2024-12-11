@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using WarehouseAppR.Server.DTOs;
 using WarehouseAppR.Server.Exceptions;
-using WarehouseAppR.Server.Interfaces;
 using WarehouseAppR.Server.Models;
+using WarehouseAppR.Server.Services.Interfaces;
 
 namespace WarehouseAppR.Server.Services
 {

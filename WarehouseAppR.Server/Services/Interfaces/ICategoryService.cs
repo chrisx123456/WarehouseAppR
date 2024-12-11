@@ -2,7 +2,7 @@
 using WarehouseAppR.Server.DTOs;
 using WarehouseAppR.Server.Models;
 
-namespace WarehouseAppR.Server.Interfaces
+namespace WarehouseAppR.Server.Services.Interfaces
 {
     public interface ICategoryService
     {

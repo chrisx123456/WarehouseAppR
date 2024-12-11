@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using WarehouseAppR.Server.Interfaces;
 using WarehouseAppR.Server.Models;
+using WarehouseAppR.Server.Services.Interfaces;
 
 namespace WarehouseAppR.Server.Services
 {
@@ -14,37 +14,36 @@ namespace WarehouseAppR.Server.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public Task DecreaseInStockQuantity(string ean, decimal count)
-        {
-            
 
-            throw new NotImplementedException();
-        }
 
         public async Task<IEnumerable<StockDTO>> GetAllInStock()
         {
-            //var allInStock = await _dbContext.InStock.ToListAsync();
-            //var allInStock
-            //return allInStock;
-            throw new NotImplementedException();
+            var allInStock = await _dbContext.InStock.ToListAsync();
+            var allInStockDtos = _mapper.Map<List<StockDTO>>(allInStock);
+            return allInStockDtos;
 
         }
 
         public async Task<IEnumerable<StockDTO>> GetInStockByEan(string ean)
         {
             var product = await _dbContext.Products.SingleOrDefaultAsync(p => p.Ean.Equals(ean));
-            var inStock = product?.Available;
-            throw new NotImplementedException();
+            var inStock = product?.InStock;
+            var inStockDtos = _mapper.Map<List<StockDTO>>(inStock);
+            return inStockDtos;
         }
 
-        public Task<StockDTO> GetInStockBySeries(string series)
+        public async Task<StockDTO> GetInStockBySeries(string series)
         {
-            throw new NotImplementedException();
+            var inStock = await _dbContext.InStock.SingleOrDefaultAsync(s => s.Series.ToLower().Equals(series.ToLower()));
+            var inStockDto = _mapper.Map<StockDTO>(inStock);
+            return inStockDto;
         }
 
-        public Task<IEnumerable<StockDTO>> GetInStockFromDate(DateOnly date)
+        public async Task<IEnumerable<StockDTO>> GetInStockFromDate(DateOnly date)
         {
-            throw new NotImplementedException();
+            var inStock = await _dbContext.InStock.Where(s => s.ExpirationDate >= date).ToListAsync();
+            var inStockDtos = _mapper.Map<List<StockDTO>>(inStock);
+            return inStockDtos;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using WarehouseAppR.Server.Interfaces;
 using WarehouseAppR.Server.Models;
 using WarehouseAppR.Server.Exceptions;
+using WarehouseAppR.Server.Services.Interfaces;
 namespace WarehouseAppR.Server.Services
 {
     public class StockAndStockDeliveryService : IStockAndStockDeliveryService

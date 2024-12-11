@@ -1,6 +1,6 @@
 ﻿using WarehouseAppR.Server.DTOs;
 
-namespace WarehouseAppR.Server.Interfaces
+namespace WarehouseAppR.Server.Services.Interfaces
 {
     public interface IManufacturersService
     {

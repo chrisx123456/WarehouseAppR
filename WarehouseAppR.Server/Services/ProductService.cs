@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WarehouseAppR.Server.Exceptions;
-using WarehouseAppR.Server.Interfaces;
 using WarehouseAppR.Server.Models;
+using WarehouseAppR.Server.Services.Interfaces;
 
 namespace WarehouseAppR.Server.Services
 {

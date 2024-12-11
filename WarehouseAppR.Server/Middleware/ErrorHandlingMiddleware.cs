@@ -22,7 +22,12 @@ namespace WarehouseAppR.Server.Middleware
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 await context.Response.WriteAsync(ex.Message);
             }
-            catch(AutoMapperMappingException ex)
+            catch (QuantityTypeAndCountTypeMismatch ex)
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsync(ex.Message);
+            }
+            catch (AutoMapperMappingException ex)
             {
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
                 await context.Response.WriteAsync(ex.InnerException?.Message ?? "Something went wrong");

@@ -106,7 +106,7 @@ namespace WarehouseAppR.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly>("Date")
+                    b.Property<DateOnly>("DateSaled")
                         .HasColumnType("date");
 
                     b.Property<decimal>("Price")
@@ -117,6 +117,10 @@ namespace WarehouseAppR.Server.Migrations
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Series")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -134,7 +138,7 @@ namespace WarehouseAppR.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly>("ExpirationDate")
+                    b.Property<DateOnly?>("ExpirationDate")
                         .HasColumnType("date");
 
                     b.Property<Guid>("ProductId")
@@ -220,7 +224,7 @@ namespace WarehouseAppR.Server.Migrations
             modelBuilder.Entity("WarehouseAppR.Server.Models.Stock", b =>
                 {
                     b.HasOne("WarehouseAppR.Server.Models.Product", "Product")
-                        .WithMany("Available")
+                        .WithMany("InStock")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -246,7 +250,7 @@ namespace WarehouseAppR.Server.Migrations
 
             modelBuilder.Entity("WarehouseAppR.Server.Models.Product", b =>
                 {
-                    b.Navigation("Available");
+                    b.Navigation("InStock");
 
                     b.Navigation("StockDeliveries");
                 });

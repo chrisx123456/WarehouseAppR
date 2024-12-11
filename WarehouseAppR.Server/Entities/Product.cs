@@ -32,7 +32,7 @@ namespace WarehouseAppR.Server.Models
         public string? Description { get; set; }
 
         public virtual List<StockDelivery>? StockDeliveries { get; set; }
-        public virtual List<Stock>? Available { get; set; }
+        public virtual List<Stock>? InStock { get; set; }
 
 
     }

@@ -56,6 +56,12 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.DateDelivered, c => c.MapFrom(src => src.DateDelivered))
                 .ForMember(dest => dest.AcceptorId, c => c.MapFrom(src => src.AcceptorId));
 
+            CreateMap<Stock, StockDTO>()
+                .ForMember(dest => dest.Name, c => c.MapFrom(src => src.Product.Name))
+                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+                .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.ExpirationDate, c => c.MapFrom(src => src.ExpirationDate))
+                .ForMember(dest => dest.StorageLocationCode, c => c.MapFrom(src => src.StorageLocationCode));
 
         }
     }
