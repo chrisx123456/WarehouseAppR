@@ -1,4 +1,4 @@
-﻿using WarehouseAppR.Server.DTOs;
+﻿using WarehouseAppR.Server.Models.DTO;
 
 namespace WarehouseAppR.Server.Services.Interfaces
 {

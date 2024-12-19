@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace WarehouseAppR.Server.Models
+namespace WarehouseAppR.Server.Models.Database
 {
     public class Stock
     {
@@ -10,11 +10,11 @@ namespace WarehouseAppR.Server.Models
         [Key]
         public Guid StockId { get; set; }
         [Required]
-        [ForeignKey(nameof(WarehouseAppR.Server.Models.Product))]
+        [ForeignKey(nameof(Database.Product))]
         public required Guid ProductId { get; set; }
         public virtual Product? Product { get; set; }
         [Required]
-        public required string Series {  get; set; }
+        public required string Series { get; set; }
         [Required]
         public required decimal Quantity { get; set; }
         [DataType(DataType.Date)]

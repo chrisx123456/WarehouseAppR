@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WarehouseAppR.Server.DTOs
+namespace WarehouseAppR.Server.Models.DTO
 {
     public class ManufacturerDTO
     {

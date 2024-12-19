@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using WarehouseAppR.Server.DataAnnotations;
 
-namespace WarehouseAppR.Server.Models
+namespace WarehouseAppR.Server.Models.DTO
 {
     public class ProductDTO
     {

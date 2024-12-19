@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WarehouseAppR.Server.Models;
+using WarehouseAppR.Server.Models.Database;
 
 namespace WarehouseAppR.Server
 {

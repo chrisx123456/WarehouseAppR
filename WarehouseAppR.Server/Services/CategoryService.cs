@@ -2,9 +2,9 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
-using WarehouseAppR.Server.DTOs;
 using WarehouseAppR.Server.Exceptions;
-using WarehouseAppR.Server.Models;
+using WarehouseAppR.Server.Models.Database;
+using WarehouseAppR.Server.Models.DTO;
 using WarehouseAppR.Server.Services.Interfaces;
 
 namespace WarehouseAppR.Server.Services

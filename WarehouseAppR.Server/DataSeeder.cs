@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Connections;
-using WarehouseAppR.Server.Models;
+using WarehouseAppR.Server.Models.Database;
 
 namespace WarehouseAppR.Server
 {

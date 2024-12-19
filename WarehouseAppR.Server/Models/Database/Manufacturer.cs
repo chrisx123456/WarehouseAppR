@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WarehouseAppR.Server.Models
+namespace WarehouseAppR.Server.Models.Database
 {
     public class Manufacturer
     {

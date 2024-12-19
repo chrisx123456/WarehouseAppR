@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Proxies.Internal;
-using WarehouseAppR.Server.Models;
+using WarehouseAppR.Server.Models.DTO;
 
 namespace WarehouseAppR.Server.Services.Interfaces
 {

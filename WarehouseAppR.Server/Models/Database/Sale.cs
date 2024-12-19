@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace WarehouseAppR.Server.Models
+namespace WarehouseAppR.Server.Models.Database
 {
     public class Sale
     {
@@ -12,7 +12,7 @@ namespace WarehouseAppR.Server.Models
         [Required]
         public required int UserId { get; set; }
         [Required]
-        [ForeignKey(nameof(WarehouseAppR.Server.Models.Product))]
+        [ForeignKey(nameof(Database.Product))]
         public required Guid ProductId { get; set; }
         public virtual Product? Product { get; set; }
         [Required]
@@ -23,7 +23,7 @@ namespace WarehouseAppR.Server.Models
         [DataType(DataType.Date)]
         public required DateOnly DateSaled { get; set; }
         [Required]
-        public required string Series {  get; set; }
+        public required string Series { get; set; }
 
     }
 }

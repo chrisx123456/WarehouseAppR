@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WarehouseAppR.Server.DTOs;
 using WarehouseAppR.Server.Models;
+using WarehouseAppR.Server.Models.DTO;
 using WarehouseAppR.Server.Services.Interfaces;
 
 namespace WarehouseAppR.Server.Controllers

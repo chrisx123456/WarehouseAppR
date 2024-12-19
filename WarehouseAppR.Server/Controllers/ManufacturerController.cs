@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WarehouseAppR.Server.DTOs;
+using WarehouseAppR.Server.Models.DTO;
 using WarehouseAppR.Server.Services;
 using WarehouseAppR.Server.Services.Interfaces;
 

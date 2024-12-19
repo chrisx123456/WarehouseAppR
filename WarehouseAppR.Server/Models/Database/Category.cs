@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace WarehouseAppR.Server.Models
+namespace WarehouseAppR.Server.Models.Database
 {
     public class Category
     {

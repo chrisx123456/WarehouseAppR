@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using WarehouseAppR.Server.DataAnnotations;
 
-namespace WarehouseAppR.Server.Models
+namespace WarehouseAppR.Server.Models.Database
 {
     public class Product
     {
@@ -10,12 +10,12 @@ namespace WarehouseAppR.Server.Models
         [DataType(nameof(Guid))]
         public Guid ProductId { get; set; }
         [Required]
-        [ForeignKey(nameof(WarehouseAppR.Server.Models.Manufacturer))]
+        [ForeignKey(nameof(Database.Manufacturer))]
         public required Guid ManufacturerId { get; set; }
         public virtual Manufacturer? Manufacturer { get; set; }  // Nawigacja do Manufacturer
         [Required]
 
-        [ForeignKey(nameof(WarehouseAppR.Server.Models.Category))]
+        [ForeignKey(nameof(Database.Category))]
         public required Guid CategoryId { get; set; }
         public virtual Category? Category { get; set; } // Nawigacja do Category
         [Required]
@@ -28,7 +28,7 @@ namespace WarehouseAppR.Server.Models
         public required decimal Price { get; set; }
         [Required]
         [Ean]
-        public required string Ean {  get; set; }
+        public required string Ean { get; set; }
         public string? Description { get; set; }
 
         public virtual List<StockDelivery>? StockDeliveries { get; set; }

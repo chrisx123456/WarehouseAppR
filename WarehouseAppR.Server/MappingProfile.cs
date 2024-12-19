@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using WarehouseAppR.Server.DTOs;
-using WarehouseAppR.Server.Models;
+using WarehouseAppR.Server.Models.Database;
+using WarehouseAppR.Server.Models.DTO;
 using WarehouseAppR.Server.Resolvers;
 
 namespace WarehouseAppR.Server
@@ -63,6 +63,19 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.ExpirationDate, c => c.MapFrom(src => src.ExpirationDate))
                 .ForMember(dest => dest.StorageLocationCode, c => c.MapFrom(src => src.StorageLocationCode));
 
+            CreateMap<Stock, SaleDTO>()
+                .ForMember(dest => dest.ProductId, c => c.MapFrom(src => src.ProductId))
+                .ForMember(dest => dest.Quantity, c => c.MapFrom((src, dest, _, context) => 
+                        context.Items.TryGetValue("quantity", out var quantity) ? (decimal)quantity : throw new AutoMapperMappingException("Stock->SaleDTO: Can't resolve quantity value ")))
+                .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => DateOnly.FromDateTime(DateTime.Now)))
+                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+                .ForMember(dest => dest.UserId, c => c.MapFrom(src => 1))
+                .AfterMap((src, dest) =>
+                {
+                    dest.Price = decimal.Round(dest.Quantity * (src.Product.Price * (1.0M + (decimal)(src.Product.Category.Vat / 100.0M))),2);
+                });
+            CreateMap<Sale, SaleDTO>();
+            
         }
     }
 }

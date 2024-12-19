@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WarehouseAppR.Server.Models
+namespace WarehouseAppR.Server.Models.DTO
 {
     public class StockDTO
     {
         [Required]
-        public required string Name {  get; set; } 
+        public required string Name { get; set; }
         [Required]
         public required string Series { get; set; }
         [Required]

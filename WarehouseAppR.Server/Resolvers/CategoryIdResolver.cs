@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using WarehouseAppR.Server.Exceptions;
-using WarehouseAppR.Server.Models;
+using WarehouseAppR.Server.Models.Database;
+using WarehouseAppR.Server.Models.DTO;
 
 namespace WarehouseAppR.Server.Resolvers
 {

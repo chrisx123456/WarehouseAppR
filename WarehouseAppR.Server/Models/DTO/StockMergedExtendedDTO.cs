@@ -1,4 +1,4 @@
-﻿namespace WarehouseAppR.Server.Models
+﻿namespace WarehouseAppR.Server.Models.DTO
 {
     public class StockMergedExtendedDTO
     {
