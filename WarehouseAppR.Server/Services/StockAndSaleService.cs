@@ -18,13 +18,25 @@ namespace WarehouseAppR.Server.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        private async Task ConfirmSale(IEnumerable<SaleDTO> sales)
+        public async Task ConfirmSale(IEnumerable<SaleDTO> sales)
         {
-            if (sales is null || sales.Any()) throw new Exception("Sale list to confirm is empty");
+            if (sales is null || !sales.Any()) throw new Exception("Sale list to confirm is empty");
             foreach (SaleDTO s in sales)
             {
-
+                var instock = _dbContext.InStock.SingleOrDefault(st => st.Series.Equals(s.Series));
+                if (instock is null) throw new NotFoundException("Confirm sale not found the product in instock table");
+                if(instock.Quantity.Equals(s.Quantity))
+                {
+                    _dbContext.InStock.Remove(instock);
+                    await _dbContext.Sales.AddAsync(_mapper.Map<Sale>(s));
+                }
+                else
+                {
+                    instock.Quantity -= s.Quantity;
+                    await _dbContext.Sales.AddAsync(_mapper.Map<Sale>(s));
+                }
             }
+            await _dbContext.SaveChangesAsync();
         }
         public async Task<IEnumerable<SaleDTO>> GenerateSellPreview(string ean, decimal count)
         {

@@ -75,7 +75,19 @@ namespace WarehouseAppR.Server
                     dest.Price = decimal.Round(dest.Quantity * (src.Product.Price * (1.0M + (decimal)(src.Product.Category.Vat / 100.0M))),2);
                 });
             CreateMap<Sale, SaleDTO>();
-            
+            CreateMap<SaleDTO, Sale>()
+                .ForMember(dest => dest.UserId, c => c.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.ProductId, c => c.MapFrom(src => src.ProductId))
+                .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.Price, c => c.MapFrom(src => src.Price))
+                .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => src.DateSaled))
+                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series));
+
+
+
+
+
+
         }
     }
 }
