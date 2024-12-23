@@ -10,8 +10,10 @@ namespace WarehouseAppR.Server.Controllers
     public class DeliveryController : ControllerBase
     {
         private readonly IStockDeliveryService _stockDeliveryService;
-        public DeliveryController(IStockDeliveryService stockDeliveryService)
+        private readonly IStockAndStockDeliveryService _stockAndDeliveryService;
+        public DeliveryController(IStockDeliveryService stockDeliveryService, IStockAndStockDeliveryService stockAndStockDeliveryService)
         {
+            _stockAndDeliveryService = stockAndStockDeliveryService;
             _stockDeliveryService = stockDeliveryService;
         }
         [HttpGet]
@@ -35,7 +37,7 @@ namespace WarehouseAppR.Server.Controllers
         [HttpPost]
         public async Task<ActionResult> AddDelivery([FromBody] AddNewStockDeliveryDTO newStock)
         {
-            await _stockDeliveryService.AddDelivery(newStock);
+            await _stockAndDeliveryService.AddDelivery(newStock);
             return NoContent();
         }
 

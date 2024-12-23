@@ -35,7 +35,7 @@ namespace WarehouseAppR.Server.Controllers
         [HttpGet("date/{date}")]
         public async Task<ActionResult<IEnumerable<StockDTO>>> GetInStockFromDate([FromRoute] DateOnly date)
         {
-            var inStock = _stockService.GetInStockFromDate(date);
+            var inStock = await _stockService.GetInStockFromDate(date);
             return Ok(inStock);
         }
 

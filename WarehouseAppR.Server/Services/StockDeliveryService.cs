@@ -10,19 +10,11 @@ namespace WarehouseAppR.Server.Services
     {
         private readonly WarehouseDbContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly IStockAndStockDeliveryService _stockAndDeliveryService;
         public StockDeliveryService(WarehouseDbContext dbContext, IMapper mapper, IStockAndStockDeliveryService stockAndStockDeliveryService)
         {
              _dbContext = dbContext;
             _mapper = mapper;
-            _stockAndDeliveryService = stockAndStockDeliveryService;
         }
-
-        public async Task AddDelivery(AddNewStockDeliveryDTO newdelivery)
-        {
-            await _stockAndDeliveryService.AddDelivery(newdelivery);
-        }
-
         public async Task<IEnumerable<StockDeliveryDTO>> GetAllDeliveries()
         {
             var deliveries = await _dbContext.StockDeliveries.ToListAsync();
