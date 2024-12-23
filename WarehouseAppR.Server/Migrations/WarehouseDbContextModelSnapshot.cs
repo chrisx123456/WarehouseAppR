@@ -25,7 +25,7 @@ namespace WarehouseAppR.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Category", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Category", b =>
                 {
                     b.Property<Guid>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -43,7 +43,7 @@ namespace WarehouseAppR.Server.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Manufacturer", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Manufacturer", b =>
                 {
                     b.Property<Guid>("ManufacturerId")
                         .ValueGeneratedOnAdd()
@@ -58,7 +58,7 @@ namespace WarehouseAppR.Server.Migrations
                     b.ToTable("Manufacturers");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Product", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Product", b =>
                 {
                     b.Property<Guid>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -100,7 +100,22 @@ namespace WarehouseAppR.Server.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Sale", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Role", b =>
+                {
+                    b.Property<Guid>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Sale", b =>
                 {
                     b.Property<Guid>("SaleId")
                         .ValueGeneratedOnAdd()
@@ -132,7 +147,7 @@ namespace WarehouseAppR.Server.Migrations
                     b.ToTable("Sales");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Stock", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Stock", b =>
                 {
                     b.Property<Guid>("StockId")
                         .ValueGeneratedOnAdd()
@@ -162,7 +177,7 @@ namespace WarehouseAppR.Server.Migrations
                     b.ToTable("InStock");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.StockDelivery", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.StockDelivery", b =>
                 {
                     b.Property<Guid>("StockDeliveryId")
                         .ValueGeneratedOnAdd()
@@ -191,15 +206,47 @@ namespace WarehouseAppR.Server.Migrations
                     b.ToTable("StockDeliveries");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Product", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.User", b =>
                 {
-                    b.HasOne("WarehouseAppR.Server.Models.Category", "Category")
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Product", b =>
+                {
+                    b.HasOne("WarehouseAppR.Server.Models.Database.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WarehouseAppR.Server.Models.Manufacturer", "Manufacturer")
+                    b.HasOne("WarehouseAppR.Server.Models.Database.Manufacturer", "Manufacturer")
                         .WithMany("Products")
                         .HasForeignKey("ManufacturerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -210,9 +257,9 @@ namespace WarehouseAppR.Server.Migrations
                     b.Navigation("Manufacturer");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Sale", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Sale", b =>
                 {
-                    b.HasOne("WarehouseAppR.Server.Models.Product", "Product")
+                    b.HasOne("WarehouseAppR.Server.Models.Database.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -221,9 +268,9 @@ namespace WarehouseAppR.Server.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Stock", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Stock", b =>
                 {
-                    b.HasOne("WarehouseAppR.Server.Models.Product", "Product")
+                    b.HasOne("WarehouseAppR.Server.Models.Database.Product", "Product")
                         .WithMany("InStock")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -232,9 +279,9 @@ namespace WarehouseAppR.Server.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.StockDelivery", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.StockDelivery", b =>
                 {
-                    b.HasOne("WarehouseAppR.Server.Models.Product", "Product")
+                    b.HasOne("WarehouseAppR.Server.Models.Database.Product", "Product")
                         .WithMany("StockDeliveries")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -243,12 +290,23 @@ namespace WarehouseAppR.Server.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Manufacturer", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.User", b =>
+                {
+                    b.HasOne("WarehouseAppR.Server.Models.Database.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Manufacturer", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Product", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Product", b =>
                 {
                     b.Navigation("InStock");
 
