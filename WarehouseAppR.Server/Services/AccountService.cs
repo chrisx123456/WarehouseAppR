@@ -24,22 +24,44 @@ namespace WarehouseAppR.Server.Services
         }
         public async Task AddNewUser(UserDTO user)
         {
-            var newUser = new User()
+            var userdb = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email.ToLower() == user.Email.ToLower());
+            if (userdb is not null) throw new LoginException("User with such email exists");
+            User newUser;
+            try
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                RoleId = Guid.NewGuid()
-            };
+                newUser = new User()
+                {
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    RoleId = _dbContext.Roles.SingleOrDefaultAsync(u => u.RoleName.ToLower() == user.RoleName.ToLower()).Result.RoleId,
+                };
+            }
+            catch
+            {
+                throw new NotFoundException("Role with such name not found");
+            }
             var passHash = _passwordHasher.HashPassword(newUser, user.Password);
             newUser.PasswordHash = passHash;
             await _dbContext.Users.AddAsync(newUser);
             await _dbContext.SaveChangesAsync();
         }
 
-        public Task ChangeUserRole(string email)
+        public async Task ChangeUserRole(string email, string role)
         {
-            throw new NotImplementedException();
+            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            if (user is  null) throw new NotFoundException("User with such email not found");
+            Guid roleId;
+            try
+            {
+                roleId = _dbContext.Roles.SingleOrDefaultAsync(u => u.RoleName.ToLower() == role.ToLower()).Result.RoleId;
+            }
+            catch
+            {
+                throw new NotFoundException("Role with such name not found");
+            }
+            user.RoleId = roleId;
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<string> LoginGetJwt(LoginDTO loginData)
@@ -65,9 +87,21 @@ namespace WarehouseAppR.Server.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public Task RemoveUser(string email)
+        public async Task RemoveUser(string email)
         {
-            throw new NotImplementedException();
+            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            if (user is null) throw new NotFoundException("User with such email not found");
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task ChangeEmail(string email, Guid id)
+        {
+            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.UserId == id);
+            if(user.Email.ToLower() == email.ToLower()) throw new ItemAlreadyExistsException("This email is already taken");
+            if (user is null) throw new Exception("Jwt token user claim id not found in db");
+            user.Email = email;
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

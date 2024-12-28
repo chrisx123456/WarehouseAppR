@@ -12,11 +12,10 @@ namespace WarehouseAppR.Server.Middleware
             {
                 await next.Invoke(context);
             }
-            catch(LoginException)
+            catch(LoginException ex)
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 await context.Response.WriteAsync(ex.Message);
-
             }
             catch (NotFoundException ex)
             {

@@ -6,8 +6,9 @@ namespace WarehouseAppR.Server.Services.Interfaces
     {
         public Task AddNewUser(UserDTO user);
         public Task RemoveUser(string email);
-        public Task ChangeUserRole(string email);
+        public Task ChangeUserRole(string email, string role);
         public Task<string> LoginGetJwt(LoginDTO loginData);
+        public Task ChangeEmail(string email, Guid id);
 
     }
 }

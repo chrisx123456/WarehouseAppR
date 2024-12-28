@@ -26,7 +26,20 @@ namespace WarehouseAppR.Server
             {
                 _dbContext.Products.AddRange(GetProducts());
             }
+            if (!_dbContext.Roles.Any())
+            {
+                _dbContext.Roles.AddRange(GetRoles());
+            }
             _dbContext.SaveChanges();
+        }
+        private IEnumerable<Role> GetRoles()
+        {
+            return new List<Role>()
+            {
+                new Role { RoleName = "User" },
+                new Role { RoleName = "Manager" },
+                new Role { RoleName = "Admin" }
+            };
         }
 
         private IEnumerable<Category> GetCategories()

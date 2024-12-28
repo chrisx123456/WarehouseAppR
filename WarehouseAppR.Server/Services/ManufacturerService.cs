@@ -41,7 +41,7 @@ namespace WarehouseAppR.Server.Services
 
         public async Task<IEnumerable<ManufacturerDTO>> GetAllManufacturers()
         {
-            var manufacturers = _dbContext.Manufacturers.ToListAsync();
+            var manufacturers = await _dbContext.Manufacturers.ToListAsync();
             var manufacturersDtos = _mapper.Map<List<ManufacturerDTO>>(manufacturers);
             return manufacturersDtos;
         }
