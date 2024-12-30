@@ -9,6 +9,7 @@ namespace WarehouseAppR.Server.Services.Interfaces
         public Task ChangeUserRole(string email, string role);
         public Task<string> LoginGetJwt(LoginDTO loginData);
         public Task ChangeEmail(string email, Guid id);
+        public Task ChangePassword(string password, Guid id);
 
     }
 }

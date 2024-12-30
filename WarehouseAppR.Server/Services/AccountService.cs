@@ -98,9 +98,19 @@ namespace WarehouseAppR.Server.Services
         public async Task ChangeEmail(string email, Guid id)
         {
             var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.UserId == id);
-            if(user.Email.ToLower() == email.ToLower()) throw new ItemAlreadyExistsException("This email is already taken");
+            if (user is null) throw new LoginException("You're not logged in");
+            if (user.Email.ToLower() == email.ToLower()) throw new ItemAlreadyExistsException("This email is already taken");
             if (user is null) throw new Exception("Jwt token user claim id not found in db");
             user.Email = email;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task ChangePassword(string password, Guid id)
+        {
+            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.UserId == id);
+            if (user is null) throw new LoginException("You're not logged in");
+            var passHash = _passwordHasher.HashPassword(user, password);
+            user.PasswordHash = passHash;
             await _dbContext.SaveChangesAsync();
         }
     }

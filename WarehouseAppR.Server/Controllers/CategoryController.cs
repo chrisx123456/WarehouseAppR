@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WarehouseAppR.Server.Models;
 using WarehouseAppR.Server.Models.DTO;
 using WarehouseAppR.Server.Services.Interfaces;
 

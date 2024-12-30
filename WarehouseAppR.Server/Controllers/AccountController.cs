@@ -46,6 +46,15 @@ namespace WarehouseAppR.Server.Controllers
             await _accountService.ChangeEmail(email, new Guid(id));
             return Ok();
         }
+        [HttpPatch("newpassword")]
+        [AllowAnonymous]
+        public async Task<ActionResult> ChangePassword([FromBody] string password)
+        {
+            string? id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (id == null) throw new LoginException("You're not logged in");
+            await _accountService.ChangePassword(password, new Guid(id));
+            return Ok();
+        }
 
 
 

@@ -21,12 +21,14 @@ namespace WarehouseAppR.Server.Controllers
             _saleService = saleService;
         }
         [HttpGet]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<ActionResult<IEnumerable<SaleDTO>>> GetAllSales()
         {
             var saleDtos = await _saleService.GetAllSales();
             return Ok(saleDtos);
         }
         [HttpGet("{ean}")]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<ActionResult<PendingSaleDTO>> GenerateSellPreview([FromRoute][Ean] string ean, [FromQuery]decimal count)
         {
             var sellList = await _stockAndSalesService.GenerateSellPreview(ean, count);
@@ -36,6 +38,7 @@ namespace WarehouseAppR.Server.Controllers
             return Ok(pendingSales);
         }
         [HttpPost("confirm/{previewId}")]
+        [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult> ConfirmSale([FromRoute]Guid previewId)
         {
             await _stockAndSalesService.ConfirmSale(_pendingSales[previewId]);
@@ -43,6 +46,7 @@ namespace WarehouseAppR.Server.Controllers
             return NoContent();
         }
         [HttpPost("reject/{previewId}")]
+        [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult> RejectSale([FromRoute] Guid previewId)
         {
             _pendingSales.Remove(previewId);
