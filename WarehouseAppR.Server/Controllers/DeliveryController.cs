@@ -20,7 +20,7 @@ namespace WarehouseAppR.Server.Controllers
         [HttpGet]
         [Authorize(Roles = "User,Manager,Admin")]
 
-        public async Task<ActionResult<IEnumerable<AddNewStockDeliveryDTO>>> GetAllDeliveries()
+        public async Task<ActionResult<IEnumerable<StockDeliveryDTO>>> GetAllDeliveries()
         {
             var deliveries = await _stockDeliveryService.GetAllDeliveries();
             return Ok(deliveries);

@@ -10,7 +10,8 @@ namespace WarehouseAppR.Server.Models.Database
         [Key]
         public Guid SaleId { get; set; }
         [Required]
-        public required int UserId { get; set; }
+        [DataType(nameof(Guid))]
+        public required Guid UserId { get; set; }
         [Required]
         [ForeignKey(nameof(Database.Product))]
         public required Guid ProductId { get; set; }

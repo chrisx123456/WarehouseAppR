@@ -16,8 +16,6 @@ namespace WarehouseAppR.Server.Models.DTO
         public required DateOnly DateDelivered { get; set; }
         public DateOnly? ExpDate { get; set; }
         [Required]
-        public required int AcceptorId { get; set; }
-        [Required]
         public required string StorageLocationCode { get; set; }
     }
 }

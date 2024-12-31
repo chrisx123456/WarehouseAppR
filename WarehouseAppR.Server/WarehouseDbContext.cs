@@ -15,6 +15,8 @@ namespace WarehouseAppR.Server
         public DbSet<StockDelivery> StockDeliveries { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<PendingSale> PendingSales { get; set; }
+        public DbSet<SaleList> SaleLists { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

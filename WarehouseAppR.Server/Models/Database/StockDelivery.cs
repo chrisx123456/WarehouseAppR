@@ -21,6 +21,7 @@ namespace WarehouseAppR.Server.Models.Database
         [Required]
         public required DateOnly DateDelivered { get; set; }
         [Required]
-        public required int AcceptorId { get; set; }
+        [DataType(nameof(Guid))]
+        public required Guid UserId { get; set; }
     }
 }

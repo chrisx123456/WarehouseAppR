@@ -14,7 +14,7 @@ namespace WarehouseAppR.Server.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public async Task AddDelivery(AddNewStockDeliveryDTO newStockDeliveryDTO)
+        public async Task AddDelivery(StockDeliveryDTO newStockDeliveryDTO)
         {
             var isStockSeriesExists = _dbContext.InStock.SingleOrDefault(s => s.Series.Equals(newStockDeliveryDTO.Series));
             var isStockDeliverySeriesExists = _dbContext.StockDeliveries.SingleOrDefault(sd => sd.Series == newStockDeliveryDTO.Series);
@@ -23,7 +23,7 @@ namespace WarehouseAppR.Server.Services
                 throw new ItemAlreadyExistsException("Item with such series already exsits in InStock table or StockDeliveries");
             }
             Stock stock = _mapper.Map<Stock>(newStockDeliveryDTO);
-            StockDelivery stockDelivery = _mapper.Map<StockDelivery>(stock);
+            StockDelivery stockDelivery = _mapper.Map<StockDelivery>(newStockDeliveryDTO);
             await _dbContext.StockDeliveries.AddAsync(stockDelivery);
             await _dbContext.InStock.AddAsync(stock);
             await _dbContext.SaveChangesAsync();

@@ -58,6 +58,23 @@ namespace WarehouseAppR.Server.Migrations
                     b.ToTable("Manufacturers");
                 });
 
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.PendingSale", b =>
+                {
+                    b.Property<Guid>("PendingSaleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateOnly>("DateAdded")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("ProductSaleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PendingSaleId");
+
+                    b.ToTable("PendingSales");
+                });
+
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Product", b =>
                 {
                     b.Property<Guid>("ProductId")
@@ -137,14 +154,44 @@ namespace WarehouseAppR.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("SaleId");
 
                     b.HasIndex("ProductId");
 
                     b.ToTable("Sales");
+                });
+
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.SaleList", b =>
+                {
+                    b.Property<Guid>("SaleListId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Ean")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("PendingSaleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProductSaleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Series")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SaleListId");
+
+                    b.HasIndex("PendingSaleId");
+
+                    b.ToTable("SaleLists");
                 });
 
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Stock", b =>
@@ -183,9 +230,6 @@ namespace WarehouseAppR.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AcceptorId")
-                        .HasColumnType("int");
-
                     b.Property<DateOnly>("DateDelivered")
                         .HasColumnType("date");
 
@@ -198,6 +242,9 @@ namespace WarehouseAppR.Server.Migrations
                     b.Property<string>("Series")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("StockDeliveryId");
 
@@ -268,6 +315,13 @@ namespace WarehouseAppR.Server.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.SaleList", b =>
+                {
+                    b.HasOne("WarehouseAppR.Server.Models.Database.PendingSale", null)
+                        .WithMany("SaleLists")
+                        .HasForeignKey("PendingSaleId");
+                });
+
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Stock", b =>
                 {
                     b.HasOne("WarehouseAppR.Server.Models.Database.Product", "Product")
@@ -304,6 +358,11 @@ namespace WarehouseAppR.Server.Migrations
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Manufacturer", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.PendingSale", b =>
+                {
+                    b.Navigation("SaleLists");
                 });
 
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Product", b =>

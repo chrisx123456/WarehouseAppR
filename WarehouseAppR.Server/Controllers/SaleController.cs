@@ -12,12 +12,11 @@ namespace WarehouseAppR.Server.Controllers
     [Route("api/[controller]")]
     public class SaleController : ControllerBase
     {
-        private readonly IStockAndSalesService _stockAndSalesService;
+        private readonly ISellingProductsService _sellingProductsService;
         private readonly ISaleService _saleService;
-        private static Dictionary<Guid, IEnumerable<SaleDTO>> _pendingSales = new();
-        public SaleController(IStockAndSalesService stockAndSalesService, ISaleService saleService)
+        public SaleController(ISellingProductsService stockAndSalesService, ISaleService saleService)
         {
-            _stockAndSalesService = stockAndSalesService;
+            _sellingProductsService = stockAndSalesService;
             _saleService = saleService;
         }
         [HttpGet]
@@ -27,29 +26,26 @@ namespace WarehouseAppR.Server.Controllers
             var saleDtos = await _saleService.GetAllSales();
             return Ok(saleDtos);
         }
-        [HttpGet("{ean}")]
-        [Authorize(Roles = "Manager,Admin")]
-        public async Task<ActionResult<PendingSaleDTO>> GenerateSellPreview([FromRoute][Ean] string ean, [FromQuery]decimal count)
+        [HttpPost("GeneratePendingSales")]
+        [Authorize(Roles = "User,Manager,Admin")]
+        public async Task<ActionResult<PendingSalePreviewDTO>> GenerateSellPreview([FromBody]IEnumerable<ProductSaleDTO> productsToSale)
         {
-            var sellList = await _stockAndSalesService.GenerateSellPreview(ean, count);
-            var previewId = Guid.NewGuid();
-            _pendingSales.Add(previewId, sellList);
-            var pendingSales = new PendingSaleDTO { PreviewId = previewId , PendingSales = sellList};
-            return Ok(pendingSales);
+            var preview = await _sellingProductsService.GeneratePendingSalePreview(productsToSale.ToList());
+            return Ok(preview);
         }
         [HttpPost("confirm/{previewId}")]
         [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult> ConfirmSale([FromRoute]Guid previewId)
         {
-            await _stockAndSalesService.ConfirmSale(_pendingSales[previewId]);
-            _pendingSales.Remove(previewId);
+            //await _stockAndSalesService.ConfirmSale(_pendingSales[previewId]);
+            //_pendingSales.Remove(previewId);
             return NoContent();
         }
         [HttpPost("reject/{previewId}")]
         [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult> RejectSale([FromRoute] Guid previewId)
         {
-            _pendingSales.Remove(previewId);
+            //_pendingSales.Remove(previewId);
             return NoContent();
         }
 

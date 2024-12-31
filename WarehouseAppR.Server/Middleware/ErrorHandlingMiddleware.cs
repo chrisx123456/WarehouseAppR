@@ -42,7 +42,7 @@ namespace WarehouseAppR.Server.Middleware
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 #if DEBUG
-                await context.Response.WriteAsync(ex.Message);
+                await context.Response.WriteAsync(ex.Message + " | " + ex.InnerException);
 #endif
 #if !DEBUG
                 await context.Response.WriteAsync("Something went wrong");

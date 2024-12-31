@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Connections;
 using WarehouseAppR.Server.Models.Database;
+using WarehouseAppR.Server.Services.Interfaces;
 
 namespace WarehouseAppR.Server
 {
     public class DataSeeder
     {
         private readonly WarehouseDbContext _dbContext;
-        public DataSeeder(WarehouseDbContext dbContext)
+        private readonly IAccountService _accountService;
+        public DataSeeder(WarehouseDbContext dbContext, IAccountService accountService)
         {
             _dbContext = dbContext;
+            _accountService = accountService;
         }
         public void Seed()
         {
@@ -31,6 +34,21 @@ namespace WarehouseAppR.Server
                 _dbContext.Roles.AddRange(GetRoles());
             }
             _dbContext.SaveChanges();
+            if (!_dbContext.Users.Any())
+            {
+                AddAdminUser();
+            }
+        }
+        private void AddAdminUser()
+        {
+            _accountService.AddNewUser(new Models.DTO.UserDTO
+            {
+                Email = "t@t.pl",
+                FirstName = "t",
+                LastName = "t",
+                Password = "t",
+                RoleName = "Admin",
+            });
         }
         private IEnumerable<Role> GetRoles()
         {
