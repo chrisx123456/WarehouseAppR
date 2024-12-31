@@ -38,7 +38,9 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.ProductId, c => c.MapFrom<ProductIdResolver>())
                 .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
                 .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
-                .ForMember(dest => dest.DateDelivered, c => c.MapFrom(src => src.DateDelivered));
+                .ForMember(dest => dest.DateDelivered, c => c.MapFrom(src => DateOnly.FromDateTime(DateTime.Now)))
+                .ForMember(dest => dest.UserId, c => c.MapFrom((src, dest, _, context) =>
+                        context.Items.TryGetValue("UserId", out var id) ? (Guid)id : throw new AutoMapperMappingException("AddNewStockDeliveryDto->StockDelivery: Can't resolve userid value ")));
             CreateMap<AddNewStockDeliveryDTO, Stock>()
                 .ForMember(dest => dest.ProductId, c => c.MapFrom<ProductIdResolver>())
                 .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
@@ -52,7 +54,7 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
                 .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
                 .ForMember(dest => dest.DateDelivered, c => c.MapFrom(src => src.DateDelivered))
-                .ForMember(dest => dest.AcceptorId, c => c.MapFrom(src => src.UserId));
+                .ForMember(dest => dest.UserId, c => c.MapFrom(src => src.UserId));
 
             CreateMap<Stock, StockDTO>()
                 .ForMember(dest => dest.Name, c => c.MapFrom(src => src.Product.Name))
@@ -80,6 +82,26 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.Price, c => c.MapFrom(src => src.Price))
                 .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => src.DateSaled))
                 .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series));
+
+
+            CreateMap<Stock, SaleListItemPreviewDTO>()
+                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+                .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Product.Ean))
+                .ForMember(dest => dest.ProductName, c => c.MapFrom(src => src.Product.Name))
+                .ForMember(dest => dest.TradeName, c => c.MapFrom(src => src.Product.TradeName))
+                .ForMember(dest => dest.Quantity, c => c.MapFrom((src, dest, _, context) =>
+                        context.Items.TryGetValue("quantity", out var quantity) ? (decimal)quantity : throw new AutoMapperMappingException("Stock->SaleListItemPreview: Can't resolve quantity value ")))
+                .AfterMap((src, dest) =>
+                {
+                    dest.Price = decimal.Round(dest.Quantity * (src.Product.Price * (1.0M + (decimal)(src.Product.Category.Vat / 100.0M))), 2);
+                });
+
+            CreateMap<SaleListItemPreviewDTO, SaleList>()
+                .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+                .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Ean))
+                .ForMember(dest => dest.ProductSaleId, c => c.MapFrom((src, dest, _, context) =>
+                        context.Items.TryGetValue("ProductSaleId", out var id) ? (Guid)id : throw new AutoMapperMappingException("SaleListItemPreview->SaleList: Can't resolve userid value ")));
 
 
 

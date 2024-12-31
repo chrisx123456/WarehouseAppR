@@ -9,9 +9,7 @@ namespace WarehouseAppR.Server.Models.Database
         [DataType(nameof(Guid))]
         public Guid PendingSaleId { get; set; }
         [Required]
-        [ForeignKey(nameof(Database.SaleList))]
         public required Guid ProductSaleId { get; set; }
-        public virtual List<SaleList>? SaleLists { get; set; }
         [Required]
         public required DateOnly DateAdded { get; set; }
     }

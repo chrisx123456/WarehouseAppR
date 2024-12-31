@@ -17,7 +17,7 @@ namespace WarehouseAppR.Server.Models.DTO
         [Required]
         public required DateOnly DateDelivered { get; set; }
         [Required]
-        public required Guid AcceptorId { get; set; }
+        public required Guid UserId { get; set; }
 
     }
 }

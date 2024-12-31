@@ -26,8 +26,8 @@ namespace WarehouseAppR.Server.Services
             var pendingSale = await _dbContext.PendingSales.SingleOrDefaultAsync(ps => ps.PendingSaleId.Equals(pendingSaleId));
             if (pendingSale == null)
                 throw new NotFoundException("Pending sale with with such id not found");
-            var productsToSale = pendingSale.SaleLists;
-            if (productsToSale == null || productsToSale.Any())
+            var productsToSale = await _dbContext.SaleLists.Where(sl => sl.ProductSaleId == pendingSale.ProductSaleId).ToListAsync();
+            if (productsToSale == null || !productsToSale.Any())
                 throw new NotFoundException("No items to sale in pending sale");
             
             HttpContext? httpContext = _httpContextAccessor.HttpContext;
@@ -123,7 +123,7 @@ namespace WarehouseAppR.Server.Services
             var pendingSale = await _dbContext.PendingSales.SingleOrDefaultAsync(ps => ps.PendingSaleId.Equals(pendingSaleId));
             if (pendingSale == null)
                 throw new NotFoundException("pendingSale with such id not found");
-            var saleLists = pendingSale.SaleLists;
+            var saleLists = await _dbContext.SaleLists.Where(sl => sl.ProductSaleId == pendingSale.ProductSaleId).ToListAsync();
             if (saleLists == null || !saleLists.Any())
                 throw new Exception("saleList empty");
             _dbContext.SaleLists.RemoveRange(saleLists);

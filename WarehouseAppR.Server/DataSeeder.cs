@@ -13,7 +13,7 @@ namespace WarehouseAppR.Server
             _dbContext = dbContext;
             _accountService = accountService;
         }
-        public void Seed()
+        public async Task Seed()
         {
             if (!_dbContext.Database.CanConnect()) throw new Exception("Db can't connect");
             if (!_dbContext.Categories.Any())
@@ -33,20 +33,20 @@ namespace WarehouseAppR.Server
             {
                 _dbContext.Roles.AddRange(GetRoles());
             }
-            _dbContext.SaveChanges();
             if (!_dbContext.Users.Any())
             {
-                AddAdminUser();
+                await AddAdminUser();
             }
+            _dbContext.SaveChanges();
         }
-        private void AddAdminUser()
+        private async Task AddAdminUser()
         {
-            _accountService.AddNewUser(new Models.DTO.UserDTO
+            await _accountService.AddNewUser(new Models.DTO.UserDTO
             {
-                Email = "t@t.pl",
-                FirstName = "t",
-                LastName = "t",
-                Password = "t",
+                Email = "ta@ta.pl",
+                FirstName = "Maciej",
+                LastName = "Testowy",
+                Password = "test",
                 RoleName = "Admin",
             });
         }
@@ -96,7 +96,7 @@ namespace WarehouseAppR.Server
                     TradeName = "SuperPencil",
                     Price = 5.23M,
                     UnitType = Units.Qt,
-                    Ean = "123456789012"
+                    Ean = "1234567890123"
                 }
             };
         }

@@ -94,7 +94,7 @@ app.UseStaticFiles();
 using(var serviceScope = app.Services.CreateScope())
 {
     var services = serviceScope.ServiceProvider;
-    services.GetRequiredService<DataSeeder>().Seed();
+    await services.GetRequiredService<DataSeeder>().Seed();
 }
 #endif
 

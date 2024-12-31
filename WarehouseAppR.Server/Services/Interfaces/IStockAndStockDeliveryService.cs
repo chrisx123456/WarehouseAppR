@@ -4,6 +4,6 @@ namespace WarehouseAppR.Server.Services.Interfaces
 {
     public interface IStockAndStockDeliveryService
     {
-        public Task AddDelivery(StockDeliveryDTO newStockDeliveryDTO);
+        public Task AddDelivery(AddNewStockDeliveryDTO newStockDeliveryDTO);
     }
 }

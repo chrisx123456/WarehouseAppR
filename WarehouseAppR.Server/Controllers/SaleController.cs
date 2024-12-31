@@ -37,15 +37,14 @@ namespace WarehouseAppR.Server.Controllers
         [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult> ConfirmSale([FromRoute]Guid previewId)
         {
-            //await _stockAndSalesService.ConfirmSale(_pendingSales[previewId]);
-            //_pendingSales.Remove(previewId);
+            await _sellingProductsService.ConfirmSale(previewId);
             return NoContent();
         }
         [HttpPost("reject/{previewId}")]
         [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult> RejectSale([FromRoute] Guid previewId)
         {
-            //_pendingSales.Remove(previewId);
+            await _sellingProductsService.RejectSale(previewId);
             return NoContent();
         }
 
