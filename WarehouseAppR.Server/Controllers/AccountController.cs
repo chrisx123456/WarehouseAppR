@@ -18,10 +18,10 @@ namespace WarehouseAppR.Server.Controllers
         }
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> LoginUser([FromBody] LoginDTO user)
+        public async Task<ActionResult<TokenDTO>> LoginUser([FromBody] LoginDTO user)
         {
             string token = await _accountService.LoginGetJwt(user);
-            return Ok(token);
+            return Ok(new TokenDTO { Token = token});
         }
         [HttpPost("register")]
         [Authorize(Roles = "Admin")]
