@@ -55,6 +55,13 @@ namespace WarehouseAppR.Server.Controllers
             await _accountService.ChangePassword(password, new Guid(id));
             return Ok();
         }
+        [HttpGet("getrole")]
+        public ActionResult<string> GetRole()
+        {
+            string? role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (role == null) throw new LoginException("You're not logged in");
+            return Ok(role);
+        }
 
 
 
