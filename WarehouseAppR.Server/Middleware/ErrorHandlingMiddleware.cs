@@ -17,36 +17,37 @@ namespace WarehouseAppR.Server.Middleware
             catch(LoginException ex)
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO(ex.Message)));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO { Message = ex.Message }));
             }
             catch (NotFoundException ex)
             {
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
-                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO(ex.Message)));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO { Message = ex.Message }));
             }
             catch (ItemAlreadyExistsException ex)
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO(ex.Message)));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO { Message = ex.Message }));
             }
             catch (QuantityTypeAndCountTypeMismatch ex)
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO(ex.Message)));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO { Message = ex.Message }));
             }
             catch (AutoMapperMappingException ex)
             {
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
-                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO(ex.InnerException?.Message ?? "Something went wrong")));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO { Message = ex.InnerException?.Message ?? "Something went wrong" }));
             }
             catch (Exception ex)
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 #if DEBUG
-                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO(ex.Message + " | " + ex.InnerException)));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO { Message = ex.Message + " | " + ex.InnerException }));
+
 #endif
 #if !DEBUG
-                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO("Something went wrong")));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO { Message = "Something went wrong" }));
 #endif
             }
         }

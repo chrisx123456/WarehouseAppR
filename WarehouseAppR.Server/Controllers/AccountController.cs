@@ -56,11 +56,11 @@ namespace WarehouseAppR.Server.Controllers
             return Ok();
         }
         [HttpGet("getrole")]
-        public ActionResult<string> GetRole()
+        public ActionResult<RoleDTO> GetRole()
         {
             string? role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             if (role == null) throw new LoginException("You're not logged in");
-            return Ok(role);
+            return Ok(new RoleDTO { Role = role});
         }
 
 

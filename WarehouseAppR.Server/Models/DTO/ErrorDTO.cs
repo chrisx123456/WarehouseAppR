@@ -2,7 +2,6 @@
 {
     public class ErrorDTO
     {
-        public string Message;
-        public ErrorDTO(string msg) { this.Message = msg; }
+        public required string Message { get; set; }
     }
 }
