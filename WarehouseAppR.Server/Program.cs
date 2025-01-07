@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -34,6 +34,19 @@ builder.Services.AddAuthentication(opt =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PublicApiPolicy",
+        policy =>
+        {
+            policy.AllowAnyOrigin() // Nadal używamy AllowAnyOrigin, ale z ograniczeniami poniżej
+                .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Dozwolone metody
+                .WithHeaders("Content-Type", "Authorization", "Accept"); // Dozwolone nagłówki
+        });
+});
+
+
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -86,7 +99,7 @@ builder.Services.AddScoped<DataSeeder>();
 #endif
 
 var app = builder.Build();
-
+app.UseCors("PublicApiPolicy");
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
