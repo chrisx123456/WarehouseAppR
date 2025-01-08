@@ -39,6 +39,10 @@ namespace WarehouseAppR.Server.Middleware
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
                 await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO { Message = ex.InnerException?.Message ?? "Something went wrong" }));
             }
+            catch(ForbiddenActionPerformedException ex) {
+                context.Response.StatusCode = StatusCodes.Status405MethodNotAllowed;
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new ErrorDTO { Message = ex.Message }));
+            }
             catch (Exception ex)
             {
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;

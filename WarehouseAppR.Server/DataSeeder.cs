@@ -20,6 +20,7 @@ namespace WarehouseAppR.Server
             {
                 _dbContext.Categories.AddRange(GetCategories());
             }
+            _dbContext.SaveChanges();
             if (!_dbContext.Manufacturers.Any())
             {
                 _dbContext.Manufacturers.AddRange(GetManufacturers());
@@ -33,6 +34,7 @@ namespace WarehouseAppR.Server
             {
                 _dbContext.Roles.AddRange(GetRoles());
             }
+            _dbContext.SaveChanges();
             if (!_dbContext.Users.Any())
             {
                 await AddAdminUser();

@@ -33,11 +33,14 @@ namespace WarehouseAppR.Server.Services
 
         public async Task DeleteCategoryByName(string name)
         {
+            
             var toDelete = await _dbContext.Categories.SingleOrDefaultAsync(c => c.Name == name);
             if (toDelete is null)
-            {
                 throw new NotFoundException("No category with such name");
-            }
+            var isThereProduct = await _dbContext.Products.FirstOrDefaultAsync(p => p.CategoryId == toDelete.CategoryId);
+            if (isThereProduct is not null)
+                throw new ForbiddenActionPerformedException("Some products use this category, you cant delete it");
+
             _dbContext.Categories.Remove(toDelete);
             await _dbContext.SaveChangesAsync();
         }

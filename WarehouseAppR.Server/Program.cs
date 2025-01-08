@@ -41,7 +41,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.AllowAnyOrigin() // Nadal używamy AllowAnyOrigin, ale z ograniczeniami poniżej
-                .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Dozwolone metody
+                .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH") // Dozwolone metody
                 .WithHeaders("Content-Type", "Authorization", "Accept"); // Dozwolone nagłówki
         });
 });
