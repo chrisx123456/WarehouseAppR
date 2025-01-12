@@ -8,5 +8,6 @@ namespace WarehouseAppR.Server.Services.Interfaces
         public Task<IEnumerable<ManufacturerDTO>> GetManufacturerByName(string name);
         public Task DeleteManufacturerByName(string name);
         public Task AddNewManufacturer(ManufacturerDTO category);
+        public Task UpdateManufacturerName(string name, string newName);
     }
 }

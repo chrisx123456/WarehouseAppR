@@ -10,35 +10,42 @@ namespace WarehouseAppR.Server.Controllers
     [Route("api/[controller]")]
     public class ManufacturerController : ControllerBase
     {
-        private readonly IManufacturersService _manufacturerCRUDService;
-        public ManufacturerController(IManufacturersService manufacturerCRUDService)
+        private readonly IManufacturersService _manufacturerService;
+        public ManufacturerController(IManufacturersService manufacturerService)
         {
-            _manufacturerCRUDService = manufacturerCRUDService;
+            _manufacturerService = manufacturerService;
         }
         [HttpGet]
         [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult<IEnumerable<ManufacturerDTO>>> GetAll()
         {
-            return Ok(await _manufacturerCRUDService.GetAllManufacturers());
+            return Ok(await _manufacturerService.GetAllManufacturers());
         }
         [HttpGet("{name}")]
         [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult<ManufacturerDTO>> GetByName([FromRoute] string name)
         {
-            return Ok(await _manufacturerCRUDService.GetManufacturerByName(name));
+            return Ok(await _manufacturerService.GetManufacturerByName(name));
         }
         [HttpDelete("{name}")]
         [Authorize(Roles = "Manager,Admin")]
         public async Task<ActionResult> Delete([FromRoute] string name)
         {
-            await _manufacturerCRUDService.DeleteManufacturerByName(name);
+            await _manufacturerService.DeleteManufacturerByName(name);
             return NoContent();
         }
         [HttpPost]
         [Authorize(Roles = "Manager,Admin")]
         public async Task<ActionResult> AddNew([FromBody] ManufacturerDTO manufacturer)
         {
-            await _manufacturerCRUDService.AddNewManufacturer(manufacturer);
+            await _manufacturerService.AddNewManufacturer(manufacturer);
+            return Ok();
+        }
+        [HttpPatch("newName")]
+        [Authorize(Roles = "Manager,Admin")]
+        public async Task<ActionResult> RenameManufacturer([FromRoute]string name, [FromQuery]string newName)
+        {
+            await _manufacturerService.UpdateManufacturerName(name, newName);
             return Ok();
         }
 

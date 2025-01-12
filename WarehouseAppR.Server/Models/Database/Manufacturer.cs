@@ -10,6 +10,5 @@ namespace WarehouseAppR.Server.Models.Database
         public Guid ManufacturerId { get; set; }
         [Required]
         public required string Name { get; set; }
-        public virtual List<Product> Products { get; set; }
     }
 }

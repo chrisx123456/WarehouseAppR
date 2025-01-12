@@ -31,9 +31,11 @@ namespace WarehouseAppR.Server.Services
         {
             var toDelete = await _dbContext.Manufacturers.SingleOrDefaultAsync(m => m.Name == name);
             if (toDelete is null)
-            {
                 throw new NotFoundException("No manufacturer with such name");
-            }
+
+            var products = await _dbContext.Products.FirstOrDefaultAsync(p => p.ManufacturerId == toDelete.ManufacturerId);
+            if(products is not null)
+                throw new ForbiddenActionPerformedException("Some products use this manufacturer, you can't delete it");
 
             _dbContext.Manufacturers.Remove(toDelete);
             await _dbContext.SaveChangesAsync();
@@ -52,6 +54,15 @@ namespace WarehouseAppR.Server.Services
             if (!manufacturers.Any()) throw new NotFoundException("No manufacturer with such name");
             var manufacturersDtos = _mapper.Map<List<ManufacturerDTO>>(manufacturers);
             return manufacturersDtos;
+        }
+
+        public async Task UpdateManufacturerName(string name, string newName)
+        {
+            var manufacurer = await _dbContext.Manufacturers.SingleOrDefaultAsync(m => m.Name == name);
+            if (manufacurer is null)
+                throw new NotFoundException("No manufacturer with such name");
+            manufacurer.Name = newName;
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
