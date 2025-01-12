@@ -41,7 +41,7 @@ namespace WarehouseAppR.Server.Controllers
             await _manufacturerService.AddNewManufacturer(manufacturer);
             return Ok();
         }
-        [HttpPatch("newName")]
+        [HttpPatch("{name}")]
         [Authorize(Roles = "Manager,Admin")]
         public async Task<ActionResult> RenameManufacturer([FromRoute]string name, [FromQuery]string newName)
         {
