@@ -45,13 +45,6 @@ namespace WarehouseAppR.Server.Controllers
             await _productService.AddNewProduct(productDto);
             return Ok();
         }
-        [HttpPatch("{ean}")]
-        [Authorize(Roles = "Manager,Admin")]
-        public async Task<ActionResult> UpdateProductPrice([FromRoute]string ean, [FromQuery]decimal newPrice)
-        {
-            await _productService.UpdateProductPrice(ean, newPrice);
-            return Ok();
-        }
         [HttpDelete("{ean}")]
         [Authorize(Roles = "Manager,Admin")]
         public async Task<ActionResult> DeleteProduct([FromRoute]string ean)
@@ -59,13 +52,28 @@ namespace WarehouseAppR.Server.Controllers
             await _productService.DeleteProductByEan(ean);
             return Ok();
         }
-        [HttpPatch("description/{ean}")]
+        [HttpPatch("{ean}")]
         [Authorize(Roles = "Manager,Admin")]
-        public async Task<ActionResult> UpdateDescription([FromBody] DescriptionDTO desc, [FromRoute]string ean)
+        public async Task<ActionResult> UpdatePriceOrAndDesc([FromBody] ProductPatchDTO patchData, [FromRoute]string ean)
         {
-            await _productService.UpdateDescription(ean, desc.Description);
+            await _productService.UpdateProduct(patchData, ean);
             return Ok();
         }
+
+        //[HttpPatch("description/{ean}")]
+        //[Authorize(Roles = "Manager,Admin")]
+        //public async Task<ActionResult> UpdateDescription([FromBody] DescriptionDTO desc, [FromRoute]string ean)
+        //{
+        //    await _productService.UpdateDescription(ean, desc.Description);
+        //    return Ok();
+        //}
+        //[HttpPatch("{ean}")]
+        //[Authorize(Roles = "Manager,Admin")]
+        //public async Task<ActionResult> UpdateProductPrice([FromRoute] string ean, [FromQuery] decimal newPrice)
+        //{
+        //    await _productService.UpdateProductPrice(ean, newPrice);
+        //    return Ok();
+        //}
 
     }
 }

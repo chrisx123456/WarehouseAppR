@@ -66,21 +66,45 @@ namespace WarehouseAppR.Server.Services
             return productsDtos;
         }
 
-        public async Task UpdateDescription(string ean, string? description)
+        public async Task UpdateProduct(ProductPatchDTO patchData, string ean)
         {
-            var product = await GetByEan(ean);
-            if (product is null) throw new NotFoundException($"Product with ean {ean} does not exists");
-            product.Description = description ?? "";
+            if(patchData == null) throw new ArgumentNullException();
+            if(patchData.Description == null && patchData.Price == null) throw new ArgumentNullException();
+
+            var prod = await _dbContext.Products.SingleOrDefaultAsync(p => p.Ean == ean);
+            if (prod is null) throw new NotFoundException($"Product with {ean} not found");
+
+            if (patchData.Price != null)
+            {
+                if(patchData.Price > 0)
+                {
+                    prod.Price = (decimal)patchData.Price;
+                }
+                else throw new ForbiddenActionPerformedException("Price can't less or equal 0");
+            }
+
+            if (patchData.Description != null)
+            {
+                prod.Description = (string)patchData.Description;
+            }
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateProductPrice(string ean, decimal newPrice)
-        {
-            var product = await GetByEan(ean);
-            if(product is null) throw new NotFoundException($"Product with ean {ean} does not exists");
-            product.Price = newPrice;
-            await _dbContext.SaveChangesAsync();
-        }
+        //public async Task UpdateDescription(string ean, string? description)
+        //{
+        //    var product = await GetByEan(ean);
+        //    if (product is null) throw new NotFoundException($"Product with ean {ean} does not exists");
+        //    product.Description = description ?? "";
+        //    await _dbContext.SaveChangesAsync();
+        //}
+
+        //public async Task UpdateProductPrice(string ean, decimal newPrice)
+        //{
+        //    var product = await GetByEan(ean);
+        //    if(product is null) throw new NotFoundException($"Product with ean {ean} does not exists");
+        //    product.Price = newPrice;
+        //    await _dbContext.SaveChangesAsync();
+        //}
         private async Task<Product?> GetByEan(string ean) 
         {
             return await _dbContext.Products.FirstOrDefaultAsync(p => p.Ean.ToLower() == ean.ToLower());
