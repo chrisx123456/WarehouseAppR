@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using WarehouseAppR.Server.Exceptions;
 using WarehouseAppR.Server.Models.DTO;
 using WarehouseAppR.Server.Services.Interfaces;
 
@@ -27,7 +28,9 @@ namespace WarehouseAppR.Server.Services
         public async Task<IEnumerable<StockDTO>> GetInStockByEan(string ean)
         {
             var product = await _dbContext.Products.SingleOrDefaultAsync(p => p.Ean.Equals(ean));
+            if (product == null) throw new NotFoundException("Product with such ean not found");
             var inStock = product?.InStock;
+            if (inStock == null || !inStock.Any()) throw new NotFoundException("Product with such ean is not in stock");
             var inStockDtos = _mapper.Map<List<StockDTO>>(inStock);
             return inStockDtos;
         }
@@ -35,6 +38,7 @@ namespace WarehouseAppR.Server.Services
         public async Task<StockDTO> GetInStockBySeries(string series)
         {
             var inStock = await _dbContext.InStock.SingleOrDefaultAsync(s => s.Series.ToLower().Equals(series.ToLower()));
+            if(inStock == null) throw new NotFoundException("Product with such series not found");
             var inStockDto = _mapper.Map<StockDTO>(inStock);
             return inStockDto;
         }
@@ -42,6 +46,7 @@ namespace WarehouseAppR.Server.Services
         public async Task<IEnumerable<StockDTO>> GetInStockFromDate(DateOnly date)
         {
             var inStock = await _dbContext.InStock.Where(s => s.ExpirationDate >= date).ToListAsync();
+            if(!inStock.Any()) throw new NotFoundException($"No stock with date>{date} found");
             var inStockDtos = _mapper.Map<List<StockDTO>>(inStock);
             return inStockDtos;
         }

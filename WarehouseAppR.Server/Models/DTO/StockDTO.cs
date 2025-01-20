@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WarehouseAppR.Server.DataAnnotations;
 
 namespace WarehouseAppR.Server.Models.DTO
 {
@@ -7,11 +8,15 @@ namespace WarehouseAppR.Server.Models.DTO
         [Required]
         public required string Name { get; set; }
         [Required]
+        [Ean]
+        public required string Ean {  get; set; }
+        [Required]
         public required string Series { get; set; }
         [Required]
         public required decimal Quantity { get; set; }
         public DateOnly? ExpirationDate { get; set; }
         [Required]
         public required string StorageLocationCode { get; set; }
+        
     }
 }
