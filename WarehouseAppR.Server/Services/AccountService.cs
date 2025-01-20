@@ -50,23 +50,42 @@ namespace WarehouseAppR.Server.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task ChangeUserRole(string email, string role)
+        //public async Task ChangeUserRole(string email, string role)
+        //{
+        //    var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+        //    if (user is  null) throw new NotFoundException("User with such email not found");
+        //    Guid roleId;
+        //    try
+        //    {
+        //        roleId = _dbContext.Roles.SingleOrDefaultAsync(u => u.RoleName.ToLower() == role.ToLower()).Result.RoleId;
+        //    }
+        //    catch
+        //    {
+        //        throw new NotFoundException("Role with such name not found");
+        //    }
+        //    user.RoleId = roleId;
+        //    await _dbContext.SaveChangesAsync();
+        //}
+        public async Task ChangeUserDataAdmin(ChangeUserDataDTO data)
         {
-            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
-            if (user is  null) throw new NotFoundException("User with such email not found");
-            Guid roleId;
-            try
-            {
-                roleId = _dbContext.Roles.SingleOrDefaultAsync(u => u.RoleName.ToLower() == role.ToLower()).Result.RoleId;
-            }
-            catch
-            {
-                throw new NotFoundException("Role with such name not found");
-            }
-            user.RoleId = roleId;
+            if (string.IsNullOrEmpty(data.OldEmail) || (data.Password == null && data.RoleName == null && data.Email == null && data.FirstName == null && data.LastName == null))
+                throw new ForbiddenActionPerformedException("No data to change");
+
+            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email.ToLower() == data.OldEmail.ToLower());
+            if (user == null) throw new NotFoundException("User with such email not found");
+            if(data.Email != null)
+                user.Email = data.Email;
+            if (data.RoleName != null)
+                user.Role = await _dbContext.Roles.SingleOrDefaultAsync(r => r.RoleName.ToLower() == data.RoleName.ToLower());
+            if(data.FirstName != null)
+                user.FirstName = data.FirstName;
+            if(data.LastName != null)
+                user.LastName = data.LastName;
+            await _dbContext.SaveChangesAsync();
+            if (data.Password != null)
+                user.PasswordHash = _passwordHasher.HashPassword(user, data.Password);
             await _dbContext.SaveChangesAsync();
         }
-
         public async Task<string> LoginGetJwt(LoginDTO loginData)
         {
             var user = await _dbContext.Users.Include(u => u.Role).SingleOrDefaultAsync(u => u.Email.Equals(loginData.Email));
@@ -131,7 +150,7 @@ namespace WarehouseAppR.Server.Services
             var usersDtos = _mapper.Map<List<ShowUserDTO>>(users);
             return usersDtos;
         }
-
+         
 
     }
 }

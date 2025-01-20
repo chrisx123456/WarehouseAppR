@@ -64,9 +64,9 @@ namespace WarehouseAppR.Server.Controllers
         }
         [HttpPatch]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> ChangeUserPassword([FromBody] ChangeUserPasswordDTO cup)
+        public async Task<ActionResult> ChangeUserData([FromBody] ChangeUserDataDTO cud)
         {
-            await _accountService.ChangeUserPassword(cup);
+            await _accountService.ChangeUserDataAdmin(cud);
             return Ok();
         }
         [HttpGet]
