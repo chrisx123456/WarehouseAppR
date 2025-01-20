@@ -48,11 +48,11 @@ namespace WarehouseAppR.Server.Controllers
         }
         [HttpPatch("newpassword")]
         [AllowAnonymous]
-        public async Task<ActionResult> ChangePassword([FromBody] string password)
+        public async Task<ActionResult> ChangePassword([FromBody] PasswordDTO passwordDTO)
         {
             string? id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (id == null) throw new LoginException("You're not logged in");
-            await _accountService.ChangePassword(password, new Guid(id));
+            await _accountService.ChangePassword(passwordDTO, new Guid(id));
             return Ok();
         }
         [HttpGet("getrole")]
@@ -62,8 +62,19 @@ namespace WarehouseAppR.Server.Controllers
             if (role == null) throw new LoginException("You're not logged in");
             return Ok(new RoleDTO { Role = role});
         }
-
-
+        [HttpPatch]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> ChangeUserPassword([FromBody] ChangeUserPasswordDTO cup)
+        {
+            await _accountService.ChangeUserPassword(cup);
+            return Ok();
+        }
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<ShowUserDTO>>> GetAllUsers()
+        {
+            return Ok(await _accountService.GetAllUsers());
+        }
 
     }
 }

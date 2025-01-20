@@ -104,8 +104,8 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.ProductSaleId, c => c.MapFrom((src, dest, _, context) =>
                         context.Items.TryGetValue("ProductSaleId", out var id) ? (Guid)id : throw new AutoMapperMappingException("SaleListItemPreview->SaleList: Can't resolve userid value ")));
 
-
-
+            CreateMap<User, ShowUserDTO>().
+                ForMember(dest => dest.RoleName, c => c.MapFrom(src => src.Role.RoleName));
 
 
 

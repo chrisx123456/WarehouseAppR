@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,11 +17,13 @@ namespace WarehouseAppR.Server.Services
         private readonly WarehouseDbContext _dbContext;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
-        public AccountService(WarehouseDbContext dbContext, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings)
+        private readonly IMapper _mapper;
+        public AccountService(WarehouseDbContext dbContext, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, IMapper mapper)
         {
             _dbContext = dbContext;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
+            _mapper = mapper;
         }
         public async Task AddNewUser(UserDTO user)
         {
@@ -105,13 +108,30 @@ namespace WarehouseAppR.Server.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task ChangePassword(string password, Guid id)
+        public async Task ChangePassword(PasswordDTO passwordDTO, Guid id)
         {
             var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.UserId == id);
             if (user is null) throw new LoginException("You're not logged in");
-            var passHash = _passwordHasher.HashPassword(user, password);
+            var passHash = _passwordHasher.HashPassword(user, passwordDTO.Password);
             user.PasswordHash = passHash;
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task ChangeUserPassword(ChangeUserPasswordDTO cup)
+        {
+            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email == cup.Email);
+            if (user == null) throw new NotFoundException("User with such email not found");
+            user.PasswordHash = _passwordHasher.HashPassword(user, cup.Password);
+        }
+
+        public async Task<IEnumerable<ShowUserDTO>> GetAllUsers()
+        {
+            var users = await _dbContext.Users.ToListAsync();
+            if (!users.Any()) throw new NotFoundException("No users found");
+            var usersDtos = _mapper.Map<List<ShowUserDTO>>(users);
+            return usersDtos;
+        }
+
+
     }
 }
