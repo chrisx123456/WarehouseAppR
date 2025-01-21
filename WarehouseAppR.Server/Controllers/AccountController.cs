@@ -56,6 +56,7 @@ namespace WarehouseAppR.Server.Controllers
             return Ok();
         }
         [HttpGet("getrole")]
+        [Authorize(Roles = "Admin,Manager,User")]
         public ActionResult<RoleDTO> GetRole()
         {
             string? role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
@@ -74,6 +75,14 @@ namespace WarehouseAppR.Server.Controllers
         public async Task<ActionResult<IEnumerable<ShowUserDTO>>> GetAllUsers()
         {
             return Ok(await _accountService.GetAllUsers());
+        }
+        [HttpGet("owndata")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ShowUserDTO>> GetOwnData()
+        {
+            string? id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (id == null) throw new LoginException("You're not logged in");
+            return Ok(await _accountService.GetOwnData(new Guid(id)));
         }
 
     }

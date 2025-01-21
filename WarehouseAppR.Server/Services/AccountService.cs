@@ -50,22 +50,13 @@ namespace WarehouseAppR.Server.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        //public async Task ChangeUserRole(string email, string role)
-        //{
-        //    var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
-        //    if (user is  null) throw new NotFoundException("User with such email not found");
-        //    Guid roleId;
-        //    try
-        //    {
-        //        roleId = _dbContext.Roles.SingleOrDefaultAsync(u => u.RoleName.ToLower() == role.ToLower()).Result.RoleId;
-        //    }
-        //    catch
-        //    {
-        //        throw new NotFoundException("Role with such name not found");
-        //    }
-        //    user.RoleId = roleId;
-        //    await _dbContext.SaveChangesAsync();
-        //}
+        public async Task<ShowUserDTO> GetOwnData(Guid id)
+        {
+            var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.UserId == id);
+            if (user is null)
+                throw new NotFoundException("User with such ID not found");
+            return _mapper.Map<ShowUserDTO>(user);
+        }
         public async Task ChangeUserDataAdmin(ChangeUserDataDTO data)
         {
             if (string.IsNullOrEmpty(data.OldEmail) || (data.Password == null && data.RoleName == null && data.Email == null && data.FirstName == null && data.LastName == null))

@@ -12,6 +12,6 @@ namespace WarehouseAppR.Server.Services.Interfaces
         public Task ChangePassword(PasswordDTO passwordDTO, Guid id);
         public Task ChangeUserPassword(ChangeUserPasswordDTO cup);
         public Task<IEnumerable<ShowUserDTO>> GetAllUsers();
-
+        public Task<ShowUserDTO> GetOwnData(Guid id);
     }
 }
