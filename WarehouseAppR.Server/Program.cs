@@ -81,6 +81,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddSingleton(authenticationSettings);
 builder.Services.AddDbContext<WarehouseDbContext>(); //DI dla DB
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddScoped<ClaimVerificationMiddleware>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IManufacturersService, ManufacturerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -93,6 +94,7 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddHttpContextAccessor();
+
 
 #if DEBUG
 builder.Services.AddScoped<DataSeeder>();
@@ -119,6 +121,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
+
 app.UseAuthentication();
 
 app.UseHttpsRedirection();
@@ -128,5 +131,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
+
+app.UseMiddleware<ClaimVerificationMiddleware>();
 
 app.Run();
