@@ -45,7 +45,7 @@ namespace WarehouseAppR.Server.Services
 
         public async Task<IEnumerable<StockDTO>> GetInStockFromDate(DateOnly date)
         {
-            var inStock = await _dbContext.InStock.Where(s => s.ExpirationDate >= date).ToListAsync();
+            var inStock = await _dbContext.InStock.Where(s => s.ExpirationDate <= date).ToListAsync();
             if(!inStock.Any()) throw new NotFoundException($"No stock with date>{date} found");
             var inStockDtos = _mapper.Map<List<StockDTO>>(inStock);
             return inStockDtos;
