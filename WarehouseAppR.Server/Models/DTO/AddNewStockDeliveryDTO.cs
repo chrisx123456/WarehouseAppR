@@ -12,7 +12,7 @@ namespace WarehouseAppR.Server.Models.DTO
         public required string Series { get; set; }
         [Required]
         public required decimal Quantity { get; set; }
-        public DateOnly? ExpDate { get; set; }
+        public DateOnly? ExpirationDate { get; set; }
         [Required]
         public required string StorageLocationCode { get; set; }
     }

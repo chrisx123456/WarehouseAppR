@@ -11,7 +11,7 @@ namespace WarehouseAppR.Server.Controllers
     public class StockController : ControllerBase
     {
         private readonly IStockService _stockService;
-        public StockController(WarehouseDbContext dbContext, IStockService stockService)
+        public StockController(IStockService stockService)
         {
             _stockService = stockService;
         }
@@ -22,6 +22,7 @@ namespace WarehouseAppR.Server.Controllers
             var inStock = await _stockService.GetAllInStock();
             return Ok(inStock);
         }
+
         [HttpGet("ean/{ean}")]
         [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult<IEnumerable<StockDTO>>> GetInStockByEan([FromRoute][Ean] string ean)
@@ -29,13 +30,15 @@ namespace WarehouseAppR.Server.Controllers
             var inStock = await _stockService.GetInStockByEan(ean);
             return Ok(inStock);
         }
+
         [HttpGet("series/{series}")]
         [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult<IEnumerable<StockDTO>>> GetInStockBySeries([FromRoute] string series)
         {
             var inStock = await _stockService.GetInStockBySeries(series);
-            return Ok(inStock);
+            return Ok(new List<StockDTO>() { inStock });
         }
+
         [HttpGet("date/{date}")]
         [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult<IEnumerable<StockDTO>>> GetInStockFromDate([FromRoute] DateOnly date)
