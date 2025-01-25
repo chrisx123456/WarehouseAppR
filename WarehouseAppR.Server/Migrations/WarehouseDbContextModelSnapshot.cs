@@ -161,6 +161,8 @@ namespace WarehouseAppR.Server.Migrations
 
                     b.HasIndex("ProductId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Sales");
                 });
 
@@ -174,9 +176,6 @@ namespace WarehouseAppR.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("PendingSaleId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("ProductSaleId")
                         .HasColumnType("uniqueidentifier");
 
@@ -188,8 +187,6 @@ namespace WarehouseAppR.Server.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SaleListId");
-
-                    b.HasIndex("PendingSaleId");
 
                     b.ToTable("SaleLists");
                 });
@@ -211,7 +208,7 @@ namespace WarehouseAppR.Server.Migrations
 
                     b.Property<string>("Series")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("StorageLocationCode")
                         .IsRequired()
@@ -220,6 +217,9 @@ namespace WarehouseAppR.Server.Migrations
                     b.HasKey("StockId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("Series")
+                        .IsUnique();
 
                     b.ToTable("InStock");
                 });
@@ -233,6 +233,9 @@ namespace WarehouseAppR.Server.Migrations
                     b.Property<DateOnly>("DateDelivered")
                         .HasColumnType("date");
 
+                    b.Property<decimal>("PricePaid")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
@@ -241,7 +244,7 @@ namespace WarehouseAppR.Server.Migrations
 
                     b.Property<string>("Series")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -249,6 +252,11 @@ namespace WarehouseAppR.Server.Migrations
                     b.HasKey("StockDeliveryId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("Series")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("StockDeliveries");
                 });
@@ -294,7 +302,7 @@ namespace WarehouseAppR.Server.Migrations
                         .IsRequired();
 
                     b.HasOne("WarehouseAppR.Server.Models.Database.Manufacturer", "Manufacturer")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("ManufacturerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -312,14 +320,15 @@ namespace WarehouseAppR.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
-                });
+                    b.HasOne("WarehouseAppR.Server.Models.Database.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.SaleList", b =>
-                {
-                    b.HasOne("WarehouseAppR.Server.Models.Database.PendingSale", null)
-                        .WithMany("SaleLists")
-                        .HasForeignKey("PendingSaleId");
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Stock", b =>
@@ -341,7 +350,22 @@ namespace WarehouseAppR.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WarehouseAppR.Server.Models.Database.Stock", "Stock")
+                        .WithOne("StockDelivery")
+                        .HasForeignKey("WarehouseAppR.Server.Models.Database.StockDelivery", "Series")
+                        .HasPrincipalKey("WarehouseAppR.Server.Models.Database.Stock", "Series");
+
+                    b.HasOne("WarehouseAppR.Server.Models.Database.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Product");
+
+                    b.Navigation("Stock");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.User", b =>
@@ -355,21 +379,17 @@ namespace WarehouseAppR.Server.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Manufacturer", b =>
-                {
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.PendingSale", b =>
-                {
-                    b.Navigation("SaleLists");
-                });
-
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Product", b =>
                 {
                     b.Navigation("InStock");
 
                     b.Navigation("StockDeliveries");
+                });
+
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Stock", b =>
+                {
+                    b.Navigation("StockDelivery")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

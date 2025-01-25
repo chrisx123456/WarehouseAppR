@@ -17,6 +17,24 @@ namespace WarehouseAppR.Server
         public DbSet<Role> Roles { get; set; }
         public DbSet<PendingSale> PendingSales { get; set; }
         public DbSet<SaleList> SaleLists { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Stock>()
+                .HasIndex(s => s.Series)
+                .IsUnique();
+
+            modelBuilder.Entity<StockDelivery>()
+                .HasIndex(sd => sd.Series)
+                .IsUnique();
+
+            // Konfiguracja relacji 1:1 opcjonalnej po stronie Stock
+            modelBuilder.Entity<StockDelivery>()
+                .HasOne(sd => sd.Stock)
+                .WithOne(s => s.StockDelivery)
+                .HasForeignKey<StockDelivery>(sd => sd.Series)
+                .HasPrincipalKey<Stock>(s => s.Series)
+                .IsRequired(false); // Relacja opcjonalna po stronie Stock
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -14,7 +14,6 @@ namespace WarehouseAppR.Server.Models.Database
         public required Guid ProductId { get; set; }
         public virtual Product? Product { get; set; }
         [Required]
-        [ForeignKey(nameof(Database.Stock))]
         public required string Series { get; set; }
         public virtual Stock? Stock { get; set; }
         [Required]
@@ -25,7 +24,7 @@ namespace WarehouseAppR.Server.Models.Database
         [Required]
         public required decimal PricePaid { get; set; }
         [Required]
-        [ForeignKey(nameof(Database.Product))]
+        [ForeignKey(nameof(Database.User))]
         public required Guid UserId { get; set; }
         public virtual User? User { get; set; }
     }
