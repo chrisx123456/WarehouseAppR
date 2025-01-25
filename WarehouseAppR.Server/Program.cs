@@ -119,6 +119,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<ClaimVerificationMiddleware>();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 
@@ -131,7 +132,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
-
-app.UseMiddleware<ClaimVerificationMiddleware>();
 
 app.Run();

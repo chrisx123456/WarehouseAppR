@@ -30,7 +30,7 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.Name, c => c.MapFrom(src => src.Name))
                 .ForMember(dest => dest.TradeName, c => c.MapFrom(src => src.TradeName))
                 .ForMember(dest => dest.UnitType, c => c.MapFrom(src => src.UnitType))
-                .ForMember(dest => dest.Price, c => c.MapFrom(src => src.Price))
+                .ForMember(dest => dest.Price, c => c.MapFrom(src => decimal.Round(src.Price, 2)))
                 .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Ean))
                 .ForMember(dest => dest.Description, c => c.MapFrom(src => src.Description));
 
@@ -38,6 +38,7 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.ProductId, c => c.MapFrom<ProductIdResolver>())
                 .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
                 .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.PricePaid, c => c.MapFrom(src => decimal.Round(src.PricePaid, 2)))
                 .ForMember(dest => dest.DateDelivered, c => c.MapFrom(src => DateOnly.FromDateTime(DateTime.Now)))
                 .ForMember(dest => dest.UserId, c => c.MapFrom((src, dest, _, context) =>
                         context.Items.TryGetValue("UserId", out var id) ? (Guid)id : throw new AutoMapperMappingException("AddNewStockDeliveryDto->StockDelivery: Can't resolve userid value ")));
@@ -63,7 +64,8 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.ExpirationDate, c => c.MapFrom(src => src.ExpirationDate))
                 .ForMember(dest => dest.StorageLocationCode, c => c.MapFrom(src => src.StorageLocationCode))
                 .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Product.Ean))
-                .ForMember(dest => dest.UnitType, c => c.MapFrom(src => src.Product.UnitType));
+                .ForMember(dest => dest.UnitType, c => c.MapFrom(src => src.Product.UnitType))
+                .ForMember(dest => dest.PricePaid, c => c.MapFrom(src => src.StockDelivery.PricePaid)); //New
 
             CreateMap<Stock, SaleDTO>()
                 .ForMember(dest => dest.ProductId, c => c.MapFrom(src => src.ProductId))

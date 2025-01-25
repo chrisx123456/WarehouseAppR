@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections;
+using System.Security.Claims;
 using WarehouseAppR.Server.DataAnnotations;
+using WarehouseAppR.Server.Exceptions;
 using WarehouseAppR.Server.Models.Database;
 using WarehouseAppR.Server.Models.DTO;
 using WarehouseAppR.Server.Services;
@@ -46,6 +49,14 @@ namespace WarehouseAppR.Server.Controllers
         {
             await _sellingProductsService.RejectSale(previewId);
             return NoContent();
+        }
+        [HttpGet("/user")]
+        [Authorize(Roles = "User,Manager,Admin")]
+        public Task<ActionResult<IEnumerable>> GetUserSales()
+        {
+            string? id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (id == null) throw new LoginException("You're not logged in");
+
         }
 
     }

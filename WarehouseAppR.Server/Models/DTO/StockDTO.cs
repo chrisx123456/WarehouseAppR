@@ -19,5 +19,7 @@ namespace WarehouseAppR.Server.Models.DTO
         public required string StorageLocationCode { get; set; }
         [Required]
         public required Units UnitType { get; set; }
+        [Required]
+        public required decimal PricePaid { get; set; }
     }
 }
