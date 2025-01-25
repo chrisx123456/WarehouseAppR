@@ -22,6 +22,8 @@ namespace WarehouseAppR.Server.Models.Database
         [Required]
         public required decimal Price { get; set; }
         [Required]
+        public required decimal Profit { get; set; }
+        [Required]
         [DataType(DataType.Date)]
         public required DateOnly DateSaled { get; set; }
         [Required]

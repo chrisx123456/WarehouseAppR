@@ -13,6 +13,8 @@ namespace WarehouseAppR.Server.Models.DTO
         [Required]
         public required decimal Price { get; set; }
         [Required]
+        public required decimal Profit { get; set; }
+        [Required]
         [DataType(DataType.Date)]
         public required DateOnly DateSaled { get; set; }
         [Required]
