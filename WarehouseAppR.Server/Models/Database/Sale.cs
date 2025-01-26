@@ -20,7 +20,7 @@ namespace WarehouseAppR.Server.Models.Database
         [Required]
         public required decimal Quantity { get; set; }
         [Required]
-        public required decimal Price { get; set; }
+        public required decimal AmountPaid { get; set; }
         [Required]
         public required decimal Profit { get; set; }
         [Required]

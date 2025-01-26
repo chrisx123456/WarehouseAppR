@@ -16,7 +16,7 @@ namespace WarehouseAppR.Server
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<PendingSale> PendingSales { get; set; }
-        public DbSet<SaleList> SaleLists { get; set; }
+        public DbSet<PendingSaleProduct> PendingSaleProducts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Stock>()

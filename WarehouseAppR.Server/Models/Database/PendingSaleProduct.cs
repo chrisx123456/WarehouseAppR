@@ -3,19 +3,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WarehouseAppR.Server.Models.Database
 {
-    public class SaleList
+    public class PendingSaleProduct
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DataType(nameof(Guid))]
-        public Guid SaleListId { get; set; }
+        public Guid PendingSaleProductId { get; set; } //Practically unused
         [Required]
-        public required Guid ProductSaleId { get; set; }
+        public required Guid PendingSaleId { get; set; }
         [Required]
-        public required string Ean { get; set; }
+        [ForeignKey(nameof(Database.Stock))]
+        public required Guid StockId { get; set; }
+        public virtual Stock? Stock { get; set; }
         [Required]
         public required decimal Quantity { get; set; }
-        [Required]
-        public required string Series { get; set; }
-
     }
 }

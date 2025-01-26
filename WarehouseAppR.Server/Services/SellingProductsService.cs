@@ -26,125 +26,123 @@ namespace WarehouseAppR.Server.Services
             var pendingSale = await _dbContext.PendingSales.SingleOrDefaultAsync(ps => ps.PendingSaleId.Equals(pendingSaleId));
             if (pendingSale == null)
                 throw new NotFoundException("Pending sale with with such id not found");
-            var productsToSale = await _dbContext.SaleLists.Where(sl => sl.ProductSaleId == pendingSale.ProductSaleId).ToListAsync();
-            if (productsToSale == null || !productsToSale.Any())
+            var pendingSaleProducts = pendingSale.PendingSaleProducts;
+            if (pendingSaleProducts == null || !pendingSaleProducts.Any())
                 throw new NotFoundException("No items to sale in pending sale");
             
             HttpContext? httpContext = _httpContextAccessor.HttpContext;
             if (httpContext == null)
-                throw new Exception("No httpcontext");
+                throw new LoginException("You need to log in again");
 
             string? idString = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (idString == null)
-                throw new Exception("No user id");
-            Guid userId = Guid.Parse(idString);
+                throw new LoginException("you need to log in again");
 
             List<Sale> sales = new List<Sale>();
-            foreach (var pts in productsToSale)
+            foreach (var psp in pendingSaleProducts)
             {
-                var product = _dbContext.Products.SingleOrDefault(p => p.Ean.Equals(pts.Ean));
-                var instock = _dbContext.InStock.SingleOrDefault(i => i.Series.Equals(pts.Series));
-                sales.Add(new Sale
+                var baseInStock = psp.Stock;
+                if (baseInStock is null) throw new NotFoundException("Internal Error");
+                if (baseInStock.Quantity == psp.Quantity)
                 {
-                    UserId = userId,
-                    ProductId = product.ProductId,
-                    Quantity = pts.Quantity,
-                    Price = decimal.Round(pts.Quantity * (product.Price * (1.0M + (decimal)(product.Category.Vat / 100.0M))), 2),
-                    DateSaled = DateOnly.FromDateTime(DateTime.Now),
-                    Series = pts.Series,
-                });
-                if (instock is null) throw new NotFoundException("Confirm sale not found the product in instock table");
-                if (instock.Quantity.Equals(pts.Quantity))
-                {
-                    _dbContext.InStock.Remove(instock);
+                    _dbContext.InStock.Remove(baseInStock);
                 }
                 else
                 {
-                    instock.Quantity -= pts.Quantity;
+                    baseInStock.Quantity -= psp.Quantity;
                 }
+                _mapper.Map<Sale>(psp, opt => opt.Items["UserId"] = Guid.Parse(idString));
             }
+
             await _dbContext.Sales.AddRangeAsync(sales);
             await RejectSale(pendingSaleId);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task<PendingSalePreviewDTO> GeneratePendingSalePreview(List<ProductSaleDTO> productsToSale)
+        public async Task<PendingSalePreviewDTO> GeneratePendingSalePreview(List<NewProductSaleDTO> productsToSale)
         {
-            List<SaleListItemPreviewDTO> salesDtos = new List<SaleListItemPreviewDTO>();
-            foreach (ProductSaleDTO ps in productsToSale)
-            {
-                var product = _dbContext.Products
-                    .AsNoTracking()  
-                    .SingleOrDefault(p => p.Ean.Equals(ps.Ean));
-
-                if (product is null)
-                    throw new NotFoundException("Product with such ean not found");
-
-                var productInStock = product.InStock;
-                if (productInStock is null || productInStock.Count == 0)
-                    throw new NotEnoughInStockException($"Product {product.TradeName} is not in stock");
-
-                if (product.UnitType == Units.Qt && (int)ps.Count != ps.Count)
-                    throw new QuantityTypeAndCountTypeMismatch("Unit qt, count is decimal");
-
-                decimal inStockCount = GetProductCount(productInStock);
-                if (inStockCount < ps.Count)
-                    throw new NotEnoughInStockException($"Not enough {product.TradeName} in stock");
-
-                productInStock = GetSortedList(productInStock);
-                salesDtos.AddRange(GenerateSaleList(productInStock, ps.Count));
-            }
-
-            var productSaleId = Guid.NewGuid();
-            var pendingSale = new PendingSale
-            {
-                DateAdded = DateOnly.FromDateTime(DateTime.Now),
-                ProductSaleId = productSaleId
+            var pendingSale = await GeneratePendingSaleAndPendingSaleProducts(productsToSale);
+            var pendingSaleProductsPreviewDtos = _mapper.Map<List<PendingSaleProductPreviewDTO>>(pendingSale.PendingSaleProducts);
+            var pendingSalePrieviewDto = new PendingSalePreviewDTO { 
+                PendingSaleId = pendingSale.PendingSaleId, 
+                ProductPreviews = pendingSaleProductsPreviewDtos 
             };
-
-            var entry = await _dbContext.PendingSales.AddAsync(pendingSale);
-
-            var saleList = _mapper.Map<List<SaleList>>(salesDtos, opt =>
-            {
-                opt.Items["ProductSaleId"] = productSaleId;
-            });
-
-            await _dbContext.SaleLists.AddRangeAsync(saleList);
-            _dbContext.SaveChanges();
-
-            return new PendingSalePreviewDTO
-            {
-                PendingSales = salesDtos,
-                PreviewId = entry.Entity.PendingSaleId
-            };
-
+            return pendingSalePrieviewDto;
         }
         public async Task RejectSale(Guid pendingSaleId)
         {
             var pendingSale = await _dbContext.PendingSales.SingleOrDefaultAsync(ps => ps.PendingSaleId.Equals(pendingSaleId));
             if (pendingSale == null)
                 throw new NotFoundException("pendingSale with such id not found");
-            var saleLists = await _dbContext.SaleLists.Where(sl => sl.ProductSaleId == pendingSale.ProductSaleId).ToListAsync();
-            if (saleLists == null || !saleLists.Any())
-                throw new Exception("saleList empty");
-            _dbContext.SaleLists.RemoveRange(saleLists);
+            var pendingSaleProducts = pendingSale.PendingSaleProducts;
+            if (pendingSaleProducts == null || !pendingSaleProducts.Any())
+                throw new Exception("pendingSaleProducts empty");
+            _dbContext.PendingSaleProducts.RemoveRange(pendingSaleProducts);
             _dbContext.PendingSales.Remove(pendingSale);
             await _dbContext.SaveChangesAsync();
         }
-        private List<SaleListItemPreviewDTO> GenerateSaleList(List<Stock> inStock, decimal count)
+        
+        private async Task<PendingSale> GeneratePendingSaleAndPendingSaleProducts(List<NewProductSaleDTO> productsToSale)
         {
-            List<SaleListItemPreviewDTO> list = new List<SaleListItemPreviewDTO>();
+            List<PendingSaleProduct> pendingSaleProducts = new List<PendingSaleProduct>();
+            foreach (NewProductSaleDTO nps in productsToSale)
+            {
+                var product = _dbContext.Products
+                    .AsNoTracking()
+                    .SingleOrDefault(p => p.Ean.Equals(nps.Ean));
+
+                if (product is null)
+                    throw new NotFoundException("Product with such ean not found");
+
+                var productInStock = product.InStock;
+                if (productInStock is null || !productInStock.Any())
+                    throw new NotEnoughInStockException($"Product {product.TradeName} is not in stock");
+
+                if (product.UnitType == Units.Qt && (int)nps.Count != nps.Count)
+                    throw new QuantityTypeAndCountTypeMismatch("Unit qt, count is decimal");
+
+                decimal inStockCount = GetProductCount(productInStock);
+                if (inStockCount < nps.Count)
+                    throw new NotEnoughInStockException($"Not enough {product.TradeName} in stock");
+
+                productInStock = GetSortedList(productInStock);
+                pendingSaleProducts.AddRange(GenerateSaleList(productInStock, nps.Count));
+            }
+
+            var pendingSaleEntry = _dbContext.PendingSales.Add(new PendingSale { DateAdded = DateOnly.FromDateTime(DateTime.Now) });
+            await _dbContext.SaveChangesAsync();
+            Guid pendingSaleId = pendingSaleEntry.Entity.PendingSaleId;
+            foreach (PendingSaleProduct psp in pendingSaleProducts) psp.PendingSaleId = pendingSaleId;
+            await _dbContext.PendingSaleProducts.AddRangeAsync(pendingSaleProducts);
+            await _dbContext.SaveChangesAsync();
+            return pendingSaleEntry.Entity;
+        }
+        private List<PendingSaleProduct> GenerateSaleList(List<Stock> productInStock, decimal count)
+        {
+            Guid tempGuid = Guid.NewGuid();
+            List<PendingSaleProduct> list = new();
             int i = 0;
             while(count != 0)
             {
-                if (inStock[i].Quantity <= count)
+                if (productInStock[i].Quantity <= count)
                 {
-                    count -= inStock[i].Quantity;
-                    list.Add(_mapper.Map<SaleListItemPreviewDTO>(inStock[i], opt => opt.Items["quantity"] = inStock[i].Quantity));
+                    count -= productInStock[i].Quantity;
+                    list.Add(new PendingSaleProduct {
+                        PendingSaleId = tempGuid, //Only temporary GUID, just to create an object
+                        Quantity = productInStock[i].Quantity, 
+                        StockId = productInStock[i].StockId,
+                        });
+                    //list.Add(_mapper.Map<SaleListItemPreviewDTO>(productInStock[i], opt => opt.Items["quantity"] = productInStock[i].Quantity));
                 }
                 else
                 {
-                    list.Add(_mapper.Map<SaleListItemPreviewDTO>(inStock[i], opt => opt.Items["quantity"] = count));
+                    //list.Add(_mapper.Map<SaleListItemPreviewDTO>(productInStock[i], opt => opt.Items["quantity"] = count));
                     count = 0;
+                    list.Add(new PendingSaleProduct
+                    {
+                        PendingSaleId = tempGuid, //Only temporary GUID, just to create an object
+                        Quantity = productInStock[i].Quantity == count ? count : throw new Exception("This should never happend(SPService/GenerateSaleList)"),
+                        StockId = productInStock[i].StockId,
+                    });
                 }
                 i++;
             }
@@ -156,7 +154,7 @@ namespace WarehouseAppR.Server.Services
               toSort.OrderBy(x => x.ExpirationDate).ThenBy(x => x.Quantity).ToList() :
               toSort.OrderBy(x => x.Quantity).ToList();
         }
-        private decimal GetProductCount(List<Stock>? pList)
+        private decimal GetProductCount(List<Stock> pList)
         {
             decimal count = 0;
             foreach (Stock s in pList) count += s.Quantity;

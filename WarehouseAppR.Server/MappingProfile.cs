@@ -67,45 +67,77 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.UnitType, c => c.MapFrom(src => src.Product.UnitType))
                 .ForMember(dest => dest.PricePaid, c => c.MapFrom(src => src.StockDelivery.PricePaid)); //New
 
-            CreateMap<Stock, SaleDTO>()
-                .ForMember(dest => dest.ProductId, c => c.MapFrom(src => src.ProductId))
-                .ForMember(dest => dest.Quantity, c => c.MapFrom((src, dest, _, context) => 
-                        context.Items.TryGetValue("quantity", out var quantity) ? (decimal)quantity : throw new AutoMapperMappingException("Stock->SaleDTO: Can't resolve quantity value ")))
-                .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => DateOnly.FromDateTime(DateTime.Now)))
-                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
-                .ForMember(dest => dest.UserId, c => c.MapFrom(src => 1))
-                .AfterMap((src, dest) =>
-                {
-                    dest.Price = decimal.Round(dest.Quantity * (src.Product.Price * (1.0M + (decimal)(src.Product.Category.Vat / 100.0M))),2);
-                });
+            //CreateMap<Stock, SaleDTO>()
+            //    .ForMember(dest => dest.ProductId, c => c.MapFrom(src => src.ProductId))
+            //    .ForMember(dest => dest.Quantity, c => c.MapFrom((src, dest, _, context) => 
+            //            context.Items.TryGetValue("quantity", out var quantity) ? (decimal)quantity : throw new AutoMapperMappingException("Stock->SaleDTO: Can't resolve quantity value ")))
+            //    .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => DateOnly.FromDateTime(DateTime.Now)))
+            //    .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+            //    .ForMember(dest => dest.UserId, c => c.MapFrom(src => 1))
+            //    .AfterMap((src, dest) =>
+            //    {
+            //        dest.Price = decimal.Round(dest.Quantity * (src.Product.Price * (1.0M + (decimal)(src.Product.Category.Vat / 100.0M))),2);
+            //    }); //Unused I guess, will see
             CreateMap<Sale, SaleDTO>();
             CreateMap<SaleDTO, Sale>()
                 .ForMember(dest => dest.UserId, c => c.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.ProductId, c => c.MapFrom(src => src.ProductId))
                 .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
-                .ForMember(dest => dest.Price, c => c.MapFrom(src => src.Price))
+                .ForMember(dest => dest.AmountPaid, c => c.MapFrom(src => src.AmountPaid))
                 .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => src.DateSaled))
                 .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series));
 
 
-            CreateMap<Stock, SaleListItemPreviewDTO>()
-                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
-                .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Product.Ean))
-                .ForMember(dest => dest.ProductName, c => c.MapFrom(src => src.Product.Name))
-                .ForMember(dest => dest.TradeName, c => c.MapFrom(src => src.Product.TradeName))
-                .ForMember(dest => dest.Quantity, c => c.MapFrom((src, dest, _, context) =>
-                        context.Items.TryGetValue("quantity", out var quantity) ? (decimal)quantity : throw new AutoMapperMappingException("Stock->SaleListItemPreview: Can't resolve quantity value ")))
+            //CreateMap<Stock, SaleListItemPreviewDTO>()
+            //    .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+            //    .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Product.Ean))
+            //    .ForMember(dest => dest.ProductName, c => c.MapFrom(src => src.Product.Name))
+            //    .ForMember(dest => dest.TradeName, c => c.MapFrom(src => src.Product.TradeName))
+            //    .ForMember(dest => dest.Quantity, c => c.MapFrom((src, dest, _, context) =>
+            //            context.Items.TryGetValue("quantity", out var quantity) ? (decimal)quantity : throw new AutoMapperMappingException("Stock->SaleListItemPreview: Can't resolve quantity value ")))
+            //    .AfterMap((src, dest) =>
+            //    {
+            //        dest.Price = decimal.Round(dest.Quantity * (src.Product.Price * (1.0M + (decimal)(src.Product.Category.Vat / 100.0M))), 2);
+            //    });
+
+            //CreateMap<SaleListItemPreviewDTO, PendingSaleProduct>()
+            //    .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
+            //    .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+            //    .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Ean))
+            //    .ForMember(dest => dest.ProductSaleId, c => c.MapFrom((src, dest, _, context) =>
+            //            context.Items.TryGetValue("ProductSaleId", out var id) ? (Guid)id : throw new AutoMapperMappingException("SaleListItemPreview->SaleList: Can't resolve userid value ")));
+
+            CreateMap<PendingSaleProduct, PendingSaleProductPreviewDTO>()
+                .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Stock.Product.Ean))
+                .ForMember(dest => dest.Name, c => c.MapFrom(src => src.Stock.Product.Name))
+                .ForMember(dest => dest.TradeName, c => c.MapFrom(src => src.Stock.Product.TradeName))
+                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Stock.Series))
+                .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
                 .AfterMap((src, dest) =>
                 {
-                    dest.Price = decimal.Round(dest.Quantity * (src.Product.Price * (1.0M + (decimal)(src.Product.Category.Vat / 100.0M))), 2);
+                    decimal amountToBePaid = decimal.Round(dest.Quantity * (src.Stock.Product.Price * (1.0M + (decimal)(src.Stock.Product.Category.Vat / 100.0M))), 2);
+                    decimal pricePaidPerUnit = decimal.Round(src.Stock.StockDelivery.PricePaid / src.Stock.StockDelivery.Quantity, 2);
+                    decimal priceSoldPerUnit = decimal.Round(amountToBePaid / src.Quantity, 2);
+                    dest.AmountToBePaid = pricePaidPerUnit;
+                    dest.Profit = (priceSoldPerUnit * src.Quantity) - (pricePaidPerUnit * src.Quantity);
                 });
 
-            CreateMap<SaleListItemPreviewDTO, SaleList>()
-                .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
-                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
-                .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Ean))
-                .ForMember(dest => dest.ProductSaleId, c => c.MapFrom((src, dest, _, context) =>
-                        context.Items.TryGetValue("ProductSaleId", out var id) ? (Guid)id : throw new AutoMapperMappingException("SaleListItemPreview->SaleList: Can't resolve userid value ")));
+            CreateMap<PendingSaleProduct, Sale>()
+               .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => DateOnly.FromDateTime(DateTime.Now)))
+               .ForMember(dest => dest.ProductId, c => c.MapFrom(src => src.Stock.Product.ProductId))
+               .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Stock.Series))
+               .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
+               .ForMember(dest => dest.UserId, c => c.MapFrom((src, dest, _, context) =>
+                   context.Items.TryGetValue("UserId", out var userId) ? (Guid)userId
+                   : throw new AutoMapperMappingException("PendingSaleProduct->Sale: Can't resolve userId")))
+                .AfterMap((src, dest) =>
+                {
+                    decimal amountToBePaid = decimal.Round(dest.Quantity * (src.Stock.Product.Price * (1.0M + (decimal)(src.Stock.Product.Category.Vat / 100.0M))), 2);
+                    decimal pricePaidPerUnit = decimal.Round(src.Stock.StockDelivery.PricePaid / src.Stock.StockDelivery.Quantity, 2);
+                    decimal priceSoldPerUnit = decimal.Round(amountToBePaid / src.Quantity, 2);
+                    dest.AmountPaid = pricePaidPerUnit;
+                    dest.Profit = (priceSoldPerUnit * src.Quantity) - (pricePaidPerUnit * src.Quantity);
+                });
 
             CreateMap<User, ShowUserDTO>().
                 ForMember(dest => dest.RoleName, c => c.MapFrom(src => src.Role.RoleName));

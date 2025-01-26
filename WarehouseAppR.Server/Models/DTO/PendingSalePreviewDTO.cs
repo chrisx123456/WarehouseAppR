@@ -5,8 +5,8 @@ namespace WarehouseAppR.Server.Models.DTO
     public class PendingSalePreviewDTO
     {
         [Required]
-        public required Guid PreviewId { get; set; }
+        public required Guid PendingSaleId { get; set; }
         [Required]
-        public required IEnumerable<SaleListItemPreviewDTO> PendingSales { get; set; }
+        public required List<PendingSaleProductPreviewDTO> ProductPreviews { get; set; }
     }
 }

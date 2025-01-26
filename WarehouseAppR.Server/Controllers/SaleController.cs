@@ -31,7 +31,7 @@ namespace WarehouseAppR.Server.Controllers
         }
         [HttpPost("GeneratePendingSales")]
         [Authorize(Roles = "User,Manager,Admin")]
-        public async Task<ActionResult<PendingSalePreviewDTO>> GenerateSellPreview([FromBody]IEnumerable<ProductSaleDTO> productsToSale)
+        public async Task<ActionResult<PendingSalePreviewDTO>> GenerateSellPreview([FromBody]IEnumerable<NewProductSaleDTO> productsToSale)
         {
             var preview = await _sellingProductsService.GeneratePendingSalePreview(productsToSale.ToList());
             return Ok(preview);
