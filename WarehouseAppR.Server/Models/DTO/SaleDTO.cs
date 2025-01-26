@@ -7,7 +7,7 @@ namespace WarehouseAppR.Server.Models.DTO
     public class SaleDTO
     {
         [Required]
-        public required Guid ProductId { get; set; }
+        public required string TradeName {  get; set; }
         [Required]
         public required decimal Quantity { get; set; }
         [Required]
@@ -20,6 +20,6 @@ namespace WarehouseAppR.Server.Models.DTO
         [Required]
         public required string Series { get; set; }
         [Required]
-        public required int UserId { get; set; }
+        public required string UserFullName { get; set; }
     }
 }

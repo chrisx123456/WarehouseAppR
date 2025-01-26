@@ -78,14 +78,21 @@ namespace WarehouseAppR.Server
             //    {
             //        dest.Price = decimal.Round(dest.Quantity * (src.Product.Price * (1.0M + (decimal)(src.Product.Category.Vat / 100.0M))),2);
             //    }); //Unused I guess, will see
-            CreateMap<Sale, SaleDTO>();
-            CreateMap<SaleDTO, Sale>()
-                .ForMember(dest => dest.UserId, c => c.MapFrom(src => src.UserId))
-                .ForMember(dest => dest.ProductId, c => c.MapFrom(src => src.ProductId))
+            CreateMap<Sale, SaleDTO>()
+                .ForMember(dest => dest.TradeName, c => c.MapFrom(src => src.Product.TradeName))
                 .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
                 .ForMember(dest => dest.AmountPaid, c => c.MapFrom(src => src.AmountPaid))
+                .ForMember(dest => dest.Profit, c => c.MapFrom(src => src.Profit))
                 .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => src.DateSaled))
-                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series));
+                .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+                .ForMember(dest => dest.UserFullName, c => c.MapFrom(src => src.User.FirstName + " " + src.User.LastName ));
+            //CreateMap<SaleDTO, Sale>()
+            //    .ForMember(dest => dest.UserId, c => c.MapFrom(src => src.UserId))
+            //    .ForMember(dest => dest.ProductId, c => c.MapFrom(src => src.ProductId))
+            //    .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
+            //    .ForMember(dest => dest.AmountPaid, c => c.MapFrom(src => src.AmountPaid))
+            //    .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => src.DateSaled))
+            //    .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series)); ////Unused I guess, will see
 
 
             //CreateMap<Stock, SaleListItemPreviewDTO>()

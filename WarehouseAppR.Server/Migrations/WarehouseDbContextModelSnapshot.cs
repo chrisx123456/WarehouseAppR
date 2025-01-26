@@ -67,12 +67,33 @@ namespace WarehouseAppR.Server.Migrations
                     b.Property<DateOnly>("DateAdded")
                         .HasColumnType("date");
 
-                    b.Property<Guid>("ProductSaleId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("PendingSaleId");
 
                     b.ToTable("PendingSales");
+                });
+
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.PendingSaleProduct", b =>
+                {
+                    b.Property<Guid>("PendingSaleProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PendingSaleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("StockId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PendingSaleProductId");
+
+                    b.HasIndex("PendingSaleId");
+
+                    b.HasIndex("StockId");
+
+                    b.ToTable("PendingSaleProducts");
                 });
 
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Product", b =>
@@ -138,14 +159,17 @@ namespace WarehouseAppR.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateOnly>("DateSaled")
                         .HasColumnType("date");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Profit")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
@@ -164,31 +188,6 @@ namespace WarehouseAppR.Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Sales");
-                });
-
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.SaleList", b =>
-                {
-                    b.Property<Guid>("SaleListId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Ean")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ProductSaleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Series")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("SaleListId");
-
-                    b.ToTable("SaleLists");
                 });
 
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Stock", b =>
@@ -293,6 +292,23 @@ namespace WarehouseAppR.Server.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.PendingSaleProduct", b =>
+                {
+                    b.HasOne("WarehouseAppR.Server.Models.Database.PendingSale", null)
+                        .WithMany("PendingSaleProducts")
+                        .HasForeignKey("PendingSaleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WarehouseAppR.Server.Models.Database.Stock", "Stock")
+                        .WithMany()
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Stock");
+                });
+
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Product", b =>
                 {
                     b.HasOne("WarehouseAppR.Server.Models.Database.Category", "Category")
@@ -377,6 +393,11 @@ namespace WarehouseAppR.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.PendingSale", b =>
+                {
+                    b.Navigation("PendingSaleProducts");
                 });
 
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Product", b =>

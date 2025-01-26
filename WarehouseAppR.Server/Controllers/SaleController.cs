@@ -52,11 +52,11 @@ namespace WarehouseAppR.Server.Controllers
         }
         //[HttpGet("/user")]
         //[Authorize(Roles = "User,Manager,Admin")]
-        //public Task<ActionResult<IEnumerable<>>> GetUserSales()
+        //public Task<ActionResult<IEnumerable<SaleDTO>>> GetUserSales()
         //{
         //    string? id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         //    if (id == null) throw new LoginException("You're not logged in");
-        //    return Ok();
+        //    return Ok(null);
         //}
 
     }
