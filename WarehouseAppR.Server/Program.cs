@@ -94,7 +94,7 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddHostedService<CleanupService>();
 
 #if DEBUG
 builder.Services.AddScoped<DataSeeder>();

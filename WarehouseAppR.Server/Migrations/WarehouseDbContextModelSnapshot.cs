@@ -64,8 +64,8 @@ namespace WarehouseAppR.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateOnly>("DateAdded")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("PendingSaleId");
 
@@ -242,7 +242,6 @@ namespace WarehouseAppR.Server.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Series")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("UserId")
@@ -253,7 +252,8 @@ namespace WarehouseAppR.Server.Migrations
                     b.HasIndex("ProductId");
 
                     b.HasIndex("Series")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Series] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -369,7 +369,8 @@ namespace WarehouseAppR.Server.Migrations
                     b.HasOne("WarehouseAppR.Server.Models.Database.Stock", "Stock")
                         .WithOne("StockDelivery")
                         .HasForeignKey("WarehouseAppR.Server.Models.Database.StockDelivery", "Series")
-                        .HasPrincipalKey("WarehouseAppR.Server.Models.Database.Stock", "Series");
+                        .HasPrincipalKey("WarehouseAppR.Server.Models.Database.Stock", "Series")
+                        .OnDelete(DeleteBehavior.ClientNoAction);
 
                     b.HasOne("WarehouseAppR.Server.Models.Database.User", "User")
                         .WithMany()

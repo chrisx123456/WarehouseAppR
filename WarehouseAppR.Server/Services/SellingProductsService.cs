@@ -15,18 +15,21 @@ namespace WarehouseAppR.Server.Services
         private readonly WarehouseDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public SellingProductsService(WarehouseDbContext dbContext, IMapper mapper, IHttpContextAccessor httpContextAccessor) 
+        private readonly IProductService _productService;
+
+        public SellingProductsService(WarehouseDbContext dbContext, IMapper mapper, IHttpContextAccessor httpContextAccessor, IProductService productService) 
         { 
             _dbContext = dbContext;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _productService = productService;
         }
         public async Task ConfirmSale(Guid pendingSaleId)
         {
             var pendingSale = await _dbContext.PendingSales.SingleOrDefaultAsync(ps => ps.PendingSaleId.Equals(pendingSaleId));
             if (pendingSale == null)
                 throw new NotFoundException("Pending sale with with such id not found");
-            var pendingSaleProducts = pendingSale.PendingSaleProducts;
+            var pendingSaleProducts = pendingSale.PendingSaleProducts.ToList();
             if (pendingSaleProducts == null || !pendingSaleProducts.Any())
                 throw new NotFoundException("No items to sale in pending sale");
             
@@ -39,24 +42,29 @@ namespace WarehouseAppR.Server.Services
                 throw new LoginException("you need to log in again");
 
             List<Sale> sales = new List<Sale>();
+            foreach(var psp in pendingSaleProducts)
+            {
+                await _dbContext.Sales.AddAsync(_mapper.Map<Sale>(psp, opt => opt.Items["UserId"] = Guid.Parse(idString)));
+            }
+            await _dbContext.SaveChangesAsync();
             foreach (var psp in pendingSaleProducts)
             {
+
                 var baseInStock = psp.Stock;
                 if (baseInStock is null) throw new NotFoundException("Internal Error");
                 if (baseInStock.Quantity == psp.Quantity)
                 {
+                    baseInStock.StockDelivery = null;
                     _dbContext.InStock.Remove(baseInStock);
                 }
                 else
                 {
                     baseInStock.Quantity -= psp.Quantity;
                 }
-                _mapper.Map<Sale>(psp, opt => opt.Items["UserId"] = Guid.Parse(idString));
             }
-
             await _dbContext.Sales.AddRangeAsync(sales);
-            await RejectSale(pendingSaleId);
             await _dbContext.SaveChangesAsync();
+            await RejectSale(pendingSaleId);
         }
         public async Task<PendingSalePreviewDTO> GeneratePendingSalePreview(List<NewProductSaleDTO> productsToSale)
         {
@@ -92,16 +100,12 @@ namespace WarehouseAppR.Server.Services
                 if (product is null)
                     throw new NotFoundException("Product with such ean not found");
 
-                var productInStock = product.InStock;
-                if (productInStock is null || !productInStock.Any())
-                    throw new NotEnoughInStockException($"Product {product.TradeName} is not in stock");
-
                 if (product.UnitType == Units.Qt && (int)nps.Count != nps.Count)
                     throw new QuantityTypeAndCountTypeMismatch("Unit qt, count is decimal");
 
-                decimal inStockCount = GetProductCount(productInStock);
-                if (inStockCount < nps.Count)
-                    throw new NotEnoughInStockException($"Not enough {product.TradeName} in stock");
+                var productInStock = product.InStock;
+                if ((productInStock is null || !productInStock.Any()) || (GetProductCount(productInStock) < nps.Count))
+                    throw new NotEnoughInStockException($"Not enough {product.TradeName} in stock / Not in stock at all");
 
                 productInStock = GetSortedList(productInStock);
                 pendingSaleProducts.AddRange(GeneratePendingSaleProductList(productInStock, nps.Count));
@@ -131,11 +135,9 @@ namespace WarehouseAppR.Server.Services
                         StockId = productInStock[i].StockId,
                         Stock = productInStock[i]
                         });
-                    //list.Add(_mapper.Map<SaleListItemPreviewDTO>(productInStock[i], opt => opt.Items["quantity"] = productInStock[i].Quantity));
                 }
                 else
                 {
-                    //list.Add(_mapper.Map<SaleListItemPreviewDTO>(productInStock[i], opt => opt.Items["quantity"] = count));
                     list.Add(new PendingSaleProduct
                     {
                         PendingSaleId = tempGuid, //Only temporary GUID, just to create an object

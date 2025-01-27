@@ -34,7 +34,8 @@ namespace WarehouseAppR.Server
                 .WithOne(s => s.StockDelivery)
                 .HasForeignKey<StockDelivery>(sd => sd.Series)
                 .HasPrincipalKey<Stock>(s => s.Series)
-                .IsRequired(false); // Relacja opcjonalna po stronie Stock
+                .IsRequired(false) // Relacja opcjonalna po stronie Stock
+                .OnDelete(DeleteBehavior.ClientNoAction);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
