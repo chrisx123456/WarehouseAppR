@@ -242,6 +242,7 @@ namespace WarehouseAppR.Server.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Series")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("UserId")
@@ -252,8 +253,7 @@ namespace WarehouseAppR.Server.Migrations
                     b.HasIndex("ProductId");
 
                     b.HasIndex("Series")
-                        .IsUnique()
-                        .HasFilter("[Series] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -355,7 +355,15 @@ namespace WarehouseAppR.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WarehouseAppR.Server.Models.Database.StockDelivery", "StockDelivery")
+                        .WithOne("Stock")
+                        .HasForeignKey("WarehouseAppR.Server.Models.Database.Stock", "Series")
+                        .HasPrincipalKey("WarehouseAppR.Server.Models.Database.StockDelivery", "Series")
+                        .OnDelete(DeleteBehavior.ClientNoAction);
+
                     b.Navigation("Product");
+
+                    b.Navigation("StockDelivery");
                 });
 
             modelBuilder.Entity("WarehouseAppR.Server.Models.Database.StockDelivery", b =>
@@ -366,12 +374,6 @@ namespace WarehouseAppR.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WarehouseAppR.Server.Models.Database.Stock", "Stock")
-                        .WithOne("StockDelivery")
-                        .HasForeignKey("WarehouseAppR.Server.Models.Database.StockDelivery", "Series")
-                        .HasPrincipalKey("WarehouseAppR.Server.Models.Database.Stock", "Series")
-                        .OnDelete(DeleteBehavior.ClientNoAction);
-
                     b.HasOne("WarehouseAppR.Server.Models.Database.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -379,8 +381,6 @@ namespace WarehouseAppR.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-
-                    b.Navigation("Stock");
 
                     b.Navigation("User");
                 });
@@ -408,10 +408,9 @@ namespace WarehouseAppR.Server.Migrations
                     b.Navigation("StockDeliveries");
                 });
 
-            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.Stock", b =>
+            modelBuilder.Entity("WarehouseAppR.Server.Models.Database.StockDelivery", b =>
                 {
-                    b.Navigation("StockDelivery")
-                        .IsRequired();
+                    b.Navigation("Stock");
                 });
 #pragma warning restore 612, 618
         }

@@ -13,6 +13,7 @@ namespace WarehouseAppR.Server.Models.Database
         [ForeignKey(nameof(Database.Product))]
         public required Guid ProductId { get; set; }
         public virtual Product? Product { get; set; }
+        [Required]
         public required string Series { get; set; }
         public virtual Stock? Stock { get; set; }
         [Required]

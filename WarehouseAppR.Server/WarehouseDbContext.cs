@@ -28,14 +28,13 @@ namespace WarehouseAppR.Server
                 .HasIndex(sd => sd.Series)
                 .IsUnique();
 
-            // Konfiguracja relacji 1:1 opcjonalnej po stronie Stock
             modelBuilder.Entity<StockDelivery>()
-                .HasOne(sd => sd.Stock)
-                .WithOne(s => s.StockDelivery)
-                .HasForeignKey<StockDelivery>(sd => sd.Series)
-                .HasPrincipalKey<Stock>(s => s.Series)
-                .IsRequired(false) // Relacja opcjonalna po stronie Stock
-                .OnDelete(DeleteBehavior.ClientNoAction);
+                .HasOne(sd => sd.Stock)          // StockDelivery może mieć jednego InStock
+                .WithOne(i => i.StockDelivery)     // InStock musi mieć jeden StockDelivery
+                .HasForeignKey<Stock>(i => i.Series) // Klucz obcy w InStock
+                .HasPrincipalKey<StockDelivery>(sd => sd.Series)
+                .IsRequired(false)                 // Relacja opcjonalna po stronie StockDelivery
+                .OnDelete(DeleteBehavior.ClientNoAction); // Blokuj automatyczne modyfikacje
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

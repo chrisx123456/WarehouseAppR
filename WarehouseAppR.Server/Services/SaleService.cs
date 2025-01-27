@@ -20,10 +20,10 @@ namespace WarehouseAppR.Server.Services
             var salesDtos = _mapper.Map<List<SaleDTO>>(sales);
             return salesDtos;
         }
-        public async Task<IEnumerable<StockDTO>> GetSalesByUser(Guid id)
+        public async Task<IEnumerable<SaleDTO>> GetSalesByUser(Guid id)
         {
             var sales = await _dbContext.Sales.Where(s => s.UserId == id).ToListAsync();
-            var salesDto = _mapper.Map<List<StockDTO>>(sales);
+            var salesDto = _mapper.Map<List<SaleDTO>>(sales);
             return salesDto;
         }
     }

@@ -23,7 +23,10 @@ namespace WarehouseAppR.Server.Services
                         var dbContext = scope.ServiceProvider.GetRequiredService<WarehouseDbContext>();
                         var cutoffTime = DateTime.Now.AddMinutes(-5);
 
-                        var affectedRows = await dbContext.PendingSales.Where(e => e.DateAdded < cutoffTime).ExecuteDeleteAsync(stoppingToken);
+                        var affectedRowsPs = dbContext.PendingSales.Where(e => e.DateAdded < cutoffTime);
+                        var affectedRowsIds = (await affectedRowsPs.ToListAsync()).Select(ps => ps.PendingSaleId).ToList();
+                        var affectedRowsPsp = await dbContext.PendingSaleProducts.Where(psp => affectedRowsIds.Contains(psp.PendingSaleId)).ExecuteDeleteAsync(stoppingToken);
+                        await affectedRowsPs.ExecuteDeleteAsync(stoppingToken);
                     }
                 }
                 catch (Exception ex)

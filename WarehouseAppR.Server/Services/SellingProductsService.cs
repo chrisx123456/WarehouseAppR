@@ -54,8 +54,8 @@ namespace WarehouseAppR.Server.Services
                 if (baseInStock is null) throw new NotFoundException("Internal Error");
                 if (baseInStock.Quantity == psp.Quantity)
                 {
-                    baseInStock.StockDelivery = null;
                     _dbContext.InStock.Remove(baseInStock);
+                    //_dbContext.InStock.Where(s => s.StockId ==  baseInStock.StockId).ExecuteDelete();
                 }
                 else
                 {
@@ -82,9 +82,8 @@ namespace WarehouseAppR.Server.Services
             if (pendingSale == null)
                 throw new NotFoundException("pendingSale with such id not found");
             var pendingSaleProducts = pendingSale.PendingSaleProducts;
-            if (pendingSaleProducts == null || !pendingSaleProducts.Any())
-                throw new Exception("pendingSaleProducts empty");
-            _dbContext.PendingSaleProducts.RemoveRange(pendingSaleProducts);
+            if (pendingSaleProducts != null && pendingSaleProducts.Any())
+                _dbContext.PendingSaleProducts.RemoveRange(pendingSaleProducts);
             _dbContext.PendingSales.Remove(pendingSale);
             await _dbContext.SaveChangesAsync();
         }
