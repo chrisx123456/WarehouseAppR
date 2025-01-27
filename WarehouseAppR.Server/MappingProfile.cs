@@ -85,6 +85,7 @@ namespace WarehouseAppR.Server
                 .ForMember(dest => dest.Profit, c => c.MapFrom(src => src.Profit))
                 .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => src.DateSaled))
                 .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Series))
+                .ForMember(dest => dest.Ean, c => c.MapFrom(src => src.Product.Ean))
                 .ForMember(dest => dest.UserFullName, c => c.MapFrom(src => src.User.FirstName + " " + src.User.LastName ));
             //CreateMap<SaleDTO, Sale>()
             //    .ForMember(dest => dest.UserId, c => c.MapFrom(src => src.UserId))
@@ -123,10 +124,9 @@ namespace WarehouseAppR.Server
                 .AfterMap((src, dest) =>
                 {
                     decimal amountToBePaid = decimal.Round(dest.Quantity * (src.Stock.Product.Price * (1.0M + (decimal)(src.Stock.Product.Category.Vat / 100.0M))), 2);
+                    dest.AmountToBePaid = amountToBePaid;
                     decimal pricePaidPerUnit = decimal.Round(src.Stock.StockDelivery.PricePaid / src.Stock.StockDelivery.Quantity, 2);
-                    decimal priceSoldPerUnit = decimal.Round(amountToBePaid / src.Quantity, 2);
-                    dest.AmountToBePaid = pricePaidPerUnit;
-                    dest.Profit = (priceSoldPerUnit * src.Quantity) - (pricePaidPerUnit * src.Quantity);
+                    dest.Profit = (src.Stock.Product.Price * src.Quantity) - (pricePaidPerUnit * src.Quantity);
                 });
 
             CreateMap<PendingSaleProduct, Sale>()
@@ -139,11 +139,10 @@ namespace WarehouseAppR.Server
                    : throw new AutoMapperMappingException("PendingSaleProduct->Sale: Can't resolve userId")))
                 .AfterMap((src, dest) =>
                 {
-                    decimal amountToBePaid = decimal.Round(dest.Quantity * (src.Stock.Product.Price * (1.0M + (decimal)(src.Stock.Product.Category.Vat / 100.0M))), 2);
+                    decimal amountPaid = decimal.Round(dest.Quantity * (src.Stock.Product.Price * (1.0M + (decimal)(src.Stock.Product.Category.Vat / 100.0M))), 2);
+                    dest.AmountPaid = amountPaid;
                     decimal pricePaidPerUnit = decimal.Round(src.Stock.StockDelivery.PricePaid / src.Stock.StockDelivery.Quantity, 2);
-                    decimal priceSoldPerUnit = decimal.Round(amountToBePaid / src.Quantity, 2);
-                    dest.AmountPaid = pricePaidPerUnit;
-                    dest.Profit = (priceSoldPerUnit * src.Quantity) - (pricePaidPerUnit * src.Quantity);
+                    dest.Profit = (src.Stock.Product.Price * src.Quantity) - (pricePaidPerUnit * src.Quantity);
                 });
 
             CreateMap<User, ShowUserDTO>().

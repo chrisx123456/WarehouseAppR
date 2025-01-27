@@ -50,14 +50,15 @@ namespace WarehouseAppR.Server.Controllers
             await _sellingProductsService.RejectSale(previewId);
             return NoContent();
         }
-        //[HttpGet("/user")]
-        //[Authorize(Roles = "User,Manager,Admin")]
-        //public Task<ActionResult<IEnumerable<SaleDTO>>> GetUserSales()
-        //{
-        //    string? id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (id == null) throw new LoginException("You're not logged in");
-        //    return Ok(null);
-        //}
+        [HttpGet("userSales")]
+        [Authorize(Roles = "User,Manager,Admin")]
+        public async Task<ActionResult<IEnumerable<SaleDTO>>> GetUserSales()
+        {
+            string? id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (id == null) throw new LoginException("You're not logged in");
+            var sales = await _saleService.GetSalesByUser(Guid.Parse(id));
+            return Ok(sales);
+        }
 
     }
 }

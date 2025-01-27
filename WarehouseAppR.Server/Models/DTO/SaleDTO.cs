@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using WarehouseAppR.Server.Models.Database;
+using WarehouseAppR.Server.DataAnnotations;
 
 namespace WarehouseAppR.Server.Models.DTO
 {
@@ -21,5 +22,8 @@ namespace WarehouseAppR.Server.Models.DTO
         public required string Series { get; set; }
         [Required]
         public required string UserFullName { get; set; }
+        [Required]
+        [Ean]
+        public required string Ean {  get; set; }
     }
 }

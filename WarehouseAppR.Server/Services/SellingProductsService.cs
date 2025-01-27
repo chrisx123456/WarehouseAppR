@@ -87,7 +87,6 @@ namespace WarehouseAppR.Server.Services
             foreach (NewProductSaleDTO nps in productsToSale)
             {
                 var product = _dbContext.Products
-                    .AsNoTracking()
                     .SingleOrDefault(p => p.Ean.Equals(nps.Ean));
 
                 if (product is null)
@@ -105,7 +104,7 @@ namespace WarehouseAppR.Server.Services
                     throw new NotEnoughInStockException($"Not enough {product.TradeName} in stock");
 
                 productInStock = GetSortedList(productInStock);
-                pendingSaleProducts.AddRange(GenerateSaleList(productInStock, nps.Count));
+                pendingSaleProducts.AddRange(GeneratePendingSaleProductList(productInStock, nps.Count));
             }
 
             var pendingSaleEntry = _dbContext.PendingSales.Add(new PendingSale { DateAdded = DateOnly.FromDateTime(DateTime.Now) });
@@ -116,33 +115,35 @@ namespace WarehouseAppR.Server.Services
             await _dbContext.SaveChangesAsync();
             return pendingSaleEntry.Entity;
         }
-        private List<PendingSaleProduct> GenerateSaleList(List<Stock> productInStock, decimal count)
+        private List<PendingSaleProduct> GeneratePendingSaleProductList(List<Stock> productInStock, decimal count)
         {
             Guid tempGuid = Guid.NewGuid();
             List<PendingSaleProduct> list = new();
             int i = 0;
             while(count != 0)
             {
-                if (productInStock[i].Quantity <= count)
+                if (productInStock[i].Quantity < count)
                 {
                     count -= productInStock[i].Quantity;
                     list.Add(new PendingSaleProduct {
                         PendingSaleId = tempGuid, //Only temporary GUID, just to create an object
                         Quantity = productInStock[i].Quantity, 
                         StockId = productInStock[i].StockId,
+                        Stock = productInStock[i]
                         });
                     //list.Add(_mapper.Map<SaleListItemPreviewDTO>(productInStock[i], opt => opt.Items["quantity"] = productInStock[i].Quantity));
                 }
                 else
                 {
                     //list.Add(_mapper.Map<SaleListItemPreviewDTO>(productInStock[i], opt => opt.Items["quantity"] = count));
-                    count = 0;
                     list.Add(new PendingSaleProduct
                     {
                         PendingSaleId = tempGuid, //Only temporary GUID, just to create an object
-                        Quantity = productInStock[i].Quantity == count ? count : throw new Exception("This should never happend(SPService/GenerateSaleList)"),
+                        Quantity = count,
                         StockId = productInStock[i].StockId,
+                        Stock = productInStock[i]
                     });
+                    count = 0;
                 }
                 i++;
             }
