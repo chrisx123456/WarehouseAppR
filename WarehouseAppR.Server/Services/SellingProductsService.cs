@@ -107,7 +107,7 @@ namespace WarehouseAppR.Server.Services
                 pendingSaleProducts.AddRange(GeneratePendingSaleProductList(productInStock, nps.Count));
             }
 
-            var pendingSaleEntry = _dbContext.PendingSales.Add(new PendingSale { DateAdded = DateOnly.FromDateTime(DateTime.Now) });
+            var pendingSaleEntry = _dbContext.PendingSales.Add(new PendingSale { DateAdded = DateTime.Now });
             await _dbContext.SaveChangesAsync();
             Guid pendingSaleId = pendingSaleEntry.Entity.PendingSaleId;
             foreach (PendingSaleProduct psp in pendingSaleProducts) psp.PendingSaleId = pendingSaleId;

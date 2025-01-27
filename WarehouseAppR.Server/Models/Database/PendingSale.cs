@@ -11,6 +11,6 @@ namespace WarehouseAppR.Server.Models.Database
         public Guid PendingSaleId { get; set; }
         public virtual List<PendingSaleProduct> PendingSaleProducts { get; set; }
         [Required]
-        public required DateOnly DateAdded { get; set; }
+        public required DateTime DateAdded { get; set; }
     }
 }
