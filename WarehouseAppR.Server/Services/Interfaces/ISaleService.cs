@@ -6,6 +6,8 @@ namespace WarehouseAppR.Server.Services.Interfaces
     {
         public Task<IEnumerable<SaleDTO>> GetAllSales();
         public Task<IEnumerable<SaleDTO>> GetSalesByUser(Guid id);
+        public Task<IEnumerable<SaleDTO>> SearchSalesByUser(Guid id, string ean, string series, DateOnly? dateFrom, DateOnly? dateTo);
+        public Task<IEnumerable<SaleDTO>> SearchSalesExtedned(string fullName, string ean, string series, DateOnly? dateFrom, DateOnly? dateTo);
         //Add SalesByUser and ByDate
     }
 }

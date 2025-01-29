@@ -59,6 +59,23 @@ namespace WarehouseAppR.Server.Controllers
             var sales = await _saleService.GetSalesByUser(Guid.Parse(id));
             return Ok(sales);
         }
-
+        [HttpGet("userSales/search")]
+        [Authorize(Roles = "User,Manager,Admin")]
+        public async Task<ActionResult<IEnumerable<SaleDTO>>> SearchUserSales([FromQuery][Ean] string ean = "", [FromQuery]string series = "",
+            [FromQuery] DateOnly? dateFrom = null, [FromQuery] DateOnly? dateTo = null)
+        {
+            string? id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (id == null) throw new LoginException("You're not logged in");
+            var sales = await _saleService.SearchSalesByUser(Guid.Parse(id), ean, series, dateFrom, dateTo);
+            return Ok(sales);
+        }
+        [Authorize(Roles = "Manager,Admin")]
+        [HttpGet("salesFullData/search")]
+        public async Task<ActionResult<IEnumerable<SaleDTO>>> SearchSalesFull([FromQuery]string fullName = "", [FromQuery]string ean = "", [FromQuery]string series = "", 
+            [FromQuery]DateOnly? dateFrom = null, [FromQuery]DateOnly? dateTo = null)
+        {
+            var sales = await _saleService.SearchSalesExtedned(fullName, ean, series, dateFrom, dateTo);
+            return Ok(sales);
+        }
     }
 }

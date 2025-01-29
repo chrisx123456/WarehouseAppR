@@ -91,6 +91,7 @@ builder.Services.AddScoped<IStockAndStockDeliveryService, StockAndStockDeliveryS
 builder.Services.AddScoped<ISellingProductsService, SellingProductsService>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddHttpContextAccessor();

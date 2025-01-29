@@ -29,7 +29,7 @@ namespace WarehouseAppR.Server.Services
                         await affectedRowsPs.ExecuteDeleteAsync(stoppingToken);
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                     throw new Exception("Cleanup Service error");
                 }
