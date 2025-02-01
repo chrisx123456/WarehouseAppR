@@ -9,10 +9,24 @@ namespace WarehouseAppR.Server
     {
         public MappingProfile()
         {
-            CreateMap<CategoryDTO, Category>();
-            CreateMap<Category, CategoryDTO>();
-            CreateMap<ManufacturerDTO, Manufacturer>();
-            CreateMap<Manufacturer, ManufacturerDTO>();
+            CreateMap<PendingSaleProduct, Sale>()
+               .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => DateOnly.FromDateTime(DateTime.Now)))
+               .ForMember(dest => dest.ProductId, c => c.MapFrom(src => src.Stock.Product.ProductId))
+               .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Stock.Series))
+               .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
+               .ForMember(dest => dest.UserId, c => c.MapFrom((src, dest, _, context) =>
+                   context.Items.TryGetValue("UserId", out var userId) ? (Guid)userId
+                   : throw new AutoMapperMappingException("PendingSaleProduct->Sale: Can't resolve userId")))
+                .AfterMap((src, dest) =>
+                {
+                    decimal amountPaid = decimal.Round(dest.Quantity * (src.Stock.Product.Price * (1.0M 
+                        + (decimal)(src.Stock.Product.Category.Vat / 100.0M))), 2);
+                    dest.AmountPaid = amountPaid;
+                    decimal pricePaidPerUnit = decimal.Round(src.Stock.StockDelivery.PricePaid / src.Stock.StockDelivery.Quantity, 2);
+                    dest.Profit = (src.Stock.Product.Price * src.Quantity) - (pricePaidPerUnit * src.Quantity);
+                });
+            CreateMap<CategoryDTO, Category>().ReverseMap();
+            CreateMap<ManufacturerDTO, Manufacturer>().ReverseMap();
 
             CreateMap<Product, ProductDTO>()
                 .ForMember(dest => dest.ManufacturerName, c => c.MapFrom(src => src.Manufacturer.Name))
@@ -129,21 +143,7 @@ namespace WarehouseAppR.Server
                     dest.Profit = (src.Stock.Product.Price * src.Quantity) - (pricePaidPerUnit * src.Quantity);
                 });
 
-            CreateMap<PendingSaleProduct, Sale>()
-               .ForMember(dest => dest.DateSaled, c => c.MapFrom(src => DateOnly.FromDateTime(DateTime.Now)))
-               .ForMember(dest => dest.ProductId, c => c.MapFrom(src => src.Stock.Product.ProductId))
-               .ForMember(dest => dest.Series, c => c.MapFrom(src => src.Stock.Series))
-               .ForMember(dest => dest.Quantity, c => c.MapFrom(src => src.Quantity))
-               .ForMember(dest => dest.UserId, c => c.MapFrom((src, dest, _, context) =>
-                   context.Items.TryGetValue("UserId", out var userId) ? (Guid)userId
-                   : throw new AutoMapperMappingException("PendingSaleProduct->Sale: Can't resolve userId")))
-                .AfterMap((src, dest) =>
-                {
-                    decimal amountPaid = decimal.Round(dest.Quantity * (src.Stock.Product.Price * (1.0M + (decimal)(src.Stock.Product.Category.Vat / 100.0M))), 2);
-                    dest.AmountPaid = amountPaid;
-                    decimal pricePaidPerUnit = decimal.Round(src.Stock.StockDelivery.PricePaid / src.Stock.StockDelivery.Quantity, 2);
-                    dest.Profit = (src.Stock.Product.Price * src.Quantity) - (pricePaidPerUnit * src.Quantity);
-                });
+
 
             CreateMap<User, ShowUserDTO>().
                 ForMember(dest => dest.RoleName, c => c.MapFrom(src => src.Role.RoleName));

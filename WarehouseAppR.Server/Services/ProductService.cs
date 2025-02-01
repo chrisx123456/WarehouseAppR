@@ -29,6 +29,11 @@ namespace WarehouseAppR.Server.Services
         {
             var product = await GetByEan(ean);
             if (product is null) throw new NotFoundException($"Product with ean {ean} does not exists");
+            if (product.InStock.Count() != 0)
+                throw new ForbiddenActionPerformedException("Products is in stock, you can't delete it");
+            var sales = await _dbContext.Sales.Where(s => s.ProductId == product.ProductId).ToListAsync();
+            if (product.StockDeliveries.Count != 0 || sales.Count != 0)
+                throw new ForbiddenActionPerformedException("To delete that product contact admin");
             _dbContext.Products.Remove(product);
             await _dbContext.SaveChangesAsync();
         }

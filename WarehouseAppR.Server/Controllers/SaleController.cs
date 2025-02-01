@@ -26,7 +26,7 @@ namespace WarehouseAppR.Server.Controllers
         [Authorize(Roles = "Manager,Admin")]
         public async Task<ActionResult<IEnumerable<SaleDTO>>> GetAllSales()
         {
-            var saleDtos = await _saleService.GetAllSales();
+            var saleDtos = await _saleService.GetAllSalesFull();
             return Ok(saleDtos);
         }
         [HttpPost("GeneratePendingSales")]
@@ -74,7 +74,7 @@ namespace WarehouseAppR.Server.Controllers
         public async Task<ActionResult<IEnumerable<SaleDTO>>> SearchSalesFull([FromQuery]string fullName = "", [FromQuery]string ean = "", [FromQuery]string series = "", 
             [FromQuery]DateOnly? dateFrom = null, [FromQuery]DateOnly? dateTo = null)
         {
-            var sales = await _saleService.SearchSalesExtedned(fullName, ean, series, dateFrom, dateTo);
+            var sales = await _saleService.SearchSalesFull(fullName, ean, series, dateFrom, dateTo);
             return Ok(sales);
         }
     }

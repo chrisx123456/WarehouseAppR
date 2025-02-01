@@ -79,7 +79,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddSingleton(authenticationSettings);
-builder.Services.AddDbContext<WarehouseDbContext>(); //DI dla DB
+builder.Services.AddDbContext<WarehouseDbContext>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<ClaimVerificationMiddleware>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();

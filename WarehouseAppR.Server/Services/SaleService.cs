@@ -15,13 +15,13 @@ namespace WarehouseAppR.Server.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<SaleDTO>> GetAllSales()
+        public async Task<IEnumerable<SaleDTO>> GetAllSalesFull()
         {
             var sales = await _dbContext.Sales.ToListAsync();
             var salesDtos = _mapper.Map<List<SaleDTO>>(sales);
             return salesDtos;
         }
-        public async Task<IEnumerable<SaleDTO>> SearchSalesExtedned(string fullName, string ean, string series, DateOnly? dateFrom, DateOnly? dateTo)
+        public async Task<IEnumerable<SaleDTO>> SearchSalesFull(string fullName, string ean, string series, DateOnly? dateFrom, DateOnly? dateTo)
         {
             var query = _dbContext.Sales.AsQueryable();
             if (fullName.Length != 0)
