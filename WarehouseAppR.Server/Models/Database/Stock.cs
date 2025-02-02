@@ -15,6 +15,7 @@ namespace WarehouseAppR.Server.Models.Database
         public virtual Product? Product { get; set; }
         [Required]
         public required string Series { get; set; }
+        public virtual StockDelivery StockDelivery { get; set; }
         [Required]
         public required decimal Quantity { get; set; }
         [DataType(DataType.Date)]

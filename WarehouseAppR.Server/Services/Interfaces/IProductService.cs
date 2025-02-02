@@ -8,11 +8,8 @@ namespace WarehouseAppR.Server.Services.Interfaces
         public Task<IEnumerable<ProductDTO>> GetProductsByName(string name);
         public Task<IEnumerable<ProductDTO>> GetProductsByTradeName(string tradeName);
         public Task<ProductDTO> GetProductByEan(string ean);
-        //public Task UpdateProductPrice(string ean, decimal newPrice);
-
         public Task DeleteProductByEan(string ean);
         public Task AddNewProduct(ProductDTO product);
-        //public Task UpdateDescription(string ean, string? description);
         public Task UpdateProduct(ProductPatchDTO patchData, string ean);
     }
 }

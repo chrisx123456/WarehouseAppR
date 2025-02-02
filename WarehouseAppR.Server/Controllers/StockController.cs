@@ -43,7 +43,7 @@ namespace WarehouseAppR.Server.Controllers
         [Authorize(Roles = "User,Manager,Admin")]
         public async Task<ActionResult<IEnumerable<StockDTO>>> GetInStockFromDate([FromRoute] DateOnly date)
         {
-            var inStock = await _stockService.GetInStockFromDate(date);
+            var inStock = await _stockService.GetInStockByDate(date);
             return Ok(inStock);
         }
 

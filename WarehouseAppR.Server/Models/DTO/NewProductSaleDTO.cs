@@ -3,7 +3,7 @@ using WarehouseAppR.Server.DataAnnotations;
 
 namespace WarehouseAppR.Server.Models.DTO
 {
-    public class ProductSaleDTO
+    public class NewProductSaleDTO
     {
         [Required]
         [Ean]

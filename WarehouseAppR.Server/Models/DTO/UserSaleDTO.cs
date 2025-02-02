@@ -2,10 +2,8 @@
 
 namespace WarehouseAppR.Server.Models.DTO
 {
-    public class SaleListItemPreviewDTO
+    public class UserSaleDTO
     {
-        [Required]
-        public required string ProductName { get; set; }
         [Required]
         public required string TradeName { get; set; }
         [Required]
@@ -13,9 +11,9 @@ namespace WarehouseAppR.Server.Models.DTO
         [Required]
         public required decimal Price { get; set; }
         [Required]
-        public required string Series { get; set; }
+        [DataType(DataType.Date)]
+        public required DateOnly DateSaled { get; set; }
         [Required]
-        public required string Ean { get; set; }
-
+        public required string Series { get; set; }
     }
 }

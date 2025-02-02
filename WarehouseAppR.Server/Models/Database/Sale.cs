@@ -10,8 +10,9 @@ namespace WarehouseAppR.Server.Models.Database
         [Key]
         public Guid SaleId { get; set; }
         [Required]
-        [DataType(nameof(Guid))]
+        [ForeignKey(nameof(Database.User))]
         public required Guid UserId { get; set; }
+        public virtual User? User { get; set; } 
         [Required]
         [ForeignKey(nameof(Database.Product))]
         public required Guid ProductId { get; set; }
@@ -19,7 +20,9 @@ namespace WarehouseAppR.Server.Models.Database
         [Required]
         public required decimal Quantity { get; set; }
         [Required]
-        public required decimal Price { get; set; }
+        public required decimal AmountPaid { get; set; }
+        [Required]
+        public required decimal Profit { get; set; }
         [Required]
         [DataType(DataType.Date)]
         public required DateOnly DateSaled { get; set; }

@@ -15,13 +15,17 @@ namespace WarehouseAppR.Server.Models.Database
         public virtual Product? Product { get; set; }
         [Required]
         public required string Series { get; set; }
+        public virtual Stock? Stock { get; set; }
         [Required]
         public required decimal Quantity { get; set; }
         [DataType(DataType.Date)]
         [Required]
         public required DateOnly DateDelivered { get; set; }
         [Required]
-        [DataType(nameof(Guid))]
+        public required decimal PricePaid { get; set; }
+        [Required]
+        [ForeignKey(nameof(Database.User))]
         public required Guid UserId { get; set; }
+        public virtual User? User { get; set; }
     }
 }

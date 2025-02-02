@@ -15,8 +15,6 @@ namespace WarehouseAppR.Server.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
-
-
         public async Task<IEnumerable<StockDTO>> GetAllInStock()
         {
             var allInStock = await _dbContext.InStock.ToListAsync();
@@ -24,7 +22,6 @@ namespace WarehouseAppR.Server.Services
             return allInStockDtos;
 
         }
-
         public async Task<IEnumerable<StockDTO>> GetInStockByEan(string ean)
         {
             var product = await _dbContext.Products.SingleOrDefaultAsync(p => p.Ean.Equals(ean));
@@ -34,7 +31,6 @@ namespace WarehouseAppR.Server.Services
             var inStockDtos = _mapper.Map<List<StockDTO>>(inStock);
             return inStockDtos;
         }
-
         public async Task<StockDTO> GetInStockBySeries(string series)
         {
             var inStock = await _dbContext.InStock.SingleOrDefaultAsync(s => s.Series.ToLower().Equals(series.ToLower()));
@@ -42,8 +38,7 @@ namespace WarehouseAppR.Server.Services
             var inStockDto = _mapper.Map<StockDTO>(inStock);
             return inStockDto;
         }
-
-        public async Task<IEnumerable<StockDTO>> GetInStockFromDate(DateOnly date)
+        public async Task<IEnumerable<StockDTO>> GetInStockByDate(DateOnly date)
         {
             var inStock = await _dbContext.InStock.Where(s => s.ExpirationDate <= date).ToListAsync();
             if(!inStock.Any()) throw new NotFoundException($"No stock with date>{date} found");

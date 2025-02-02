@@ -1,21 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using WarehouseAppR.Server.DataAnnotations;
 
 namespace WarehouseAppR.Server.Models.DTO
 {
-    public class AddNewStockDeliveryDTO
+    public class PendingSaleProductPreviewDTO
     {
         [Required]
-        [Ean]
         public required string Ean { get; set; }
+        [Required]
+        public required string Name { get; set; }
+        [Required]
+        public required string TradeName { get; set; }
         [Required]
         public required string Series { get; set; }
         [Required]
         public required decimal Quantity { get; set; }
         [Required]
-        public required decimal PricePaid { get; set; }
-        public DateOnly? ExpirationDate { get; set; }
+        public required decimal AmountToBePaid { get; set; }
         [Required]
-        public required string StorageLocationCode { get; set; }
+        public required decimal Profit { get; set; }
     }
 }
