@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for warehouseappr on 2025-02-02T02:03:25Z
+# fly.toml app configuration file generated for warehouseappr on 2025-02-02T02:11:55Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -7,9 +7,6 @@ app = 'warehouseappr'
 primary_region = 'ams'
 
 [build]
-
-[env]
-  PORT = '8080'
 
 [http_service]
   internal_port = 8080
