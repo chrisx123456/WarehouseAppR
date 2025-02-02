@@ -56,7 +56,6 @@ namespace WarehouseAppR.Server.Services
             }
             if (warning != string.Empty)
                 throw new NotFoundException(warning);
-
         }
 
         public CurrencyDTO GetCurrency()
