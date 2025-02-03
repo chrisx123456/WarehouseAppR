@@ -93,6 +93,9 @@ namespace WarehouseAppR.Server.Services
             List<PendingSaleProduct> pendingSaleProducts = new List<PendingSaleProduct>();
             foreach (NewProductSaleDTO nps in productsToSale)
             {
+                if(nps.Count == 0)
+                    continue;
+
                 var product = _dbContext.Products
                     .SingleOrDefault(p => p.Ean.Equals(nps.Ean));
 
@@ -109,6 +112,8 @@ namespace WarehouseAppR.Server.Services
                 productInStock = GetSortedList(productInStock);
                 pendingSaleProducts.AddRange(GeneratePendingSaleProductList(productInStock, nps.Count));
             }
+            if(pendingSaleProducts.Count == 0)
+                throw new ForbiddenActionPerformedException("All of the sales had a 0 count");
 
             var pendingSaleEntry = _dbContext.PendingSales.Add(new PendingSale { DateAdded = DateTime.Now });
             await _dbContext.SaveChangesAsync();
