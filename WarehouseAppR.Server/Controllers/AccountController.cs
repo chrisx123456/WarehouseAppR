@@ -20,26 +20,26 @@ namespace WarehouseAppR.Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<TokenDTO>> LoginUser([FromBody] LoginDTO user)
         {
-            string token = await _accountService.LoginGetJwt(user);
-            return Ok(new TokenDTO { Token = token});
+            TokenDTO token = await _accountService.LoginGetJwt(user);
+            return token;
         }
         [HttpPost("register")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> RegisterUser([FromBody] UserDTO user)
+        public async Task<ActionResult> RegisterUser([FromBody] UserDTO user)
         {
             await _accountService.AddNewUser(user);
-            return Ok("Tet");
+            return Ok();
         }
         [HttpDelete("delete/{email}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteUser([FromRoute] string email)
+        public async Task<ActionResult> DeleteUserByEmail([FromRoute] string email)
         {
-            await _accountService.RemoveUser(email);
+            await _accountService.DeleteUserByEmail(email);
             return Ok();
         }
         [HttpPatch("newemail/{email}")]
         [AllowAnonymous]
-        public async Task<ActionResult> ChangeEmail([FromRoute] string email)
+        public async Task<ActionResult> ChangeOwnEmail([FromRoute] string email)
         {
             string? id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (id == null) throw new LoginException("You're not logged in");
@@ -48,16 +48,16 @@ namespace WarehouseAppR.Server.Controllers
         }
         [HttpPatch("newpassword")]
         [AllowAnonymous]
-        public async Task<ActionResult> ChangePassword([FromBody] PasswordDTO passwordDTO)
+        public async Task<ActionResult> ChangeOwnPassword([FromBody] PasswordDTO password)
         {
             string? id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (id == null) throw new LoginException("You're not logged in");
-            await _accountService.ChangePassword(passwordDTO, new Guid(id));
+            await _accountService.ChangePassword(password, new Guid(id));
             return Ok();
         }
         [HttpGet("getrole")]
         [Authorize(Roles = "Admin,Manager,User")]
-        public ActionResult<RoleDTO> GetRole()
+        public ActionResult<RoleDTO> GetOwnRole()
         {
             string? role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             if (role == null) throw new LoginException("You're not logged in");
@@ -65,9 +65,9 @@ namespace WarehouseAppR.Server.Controllers
         }
         [HttpPatch]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> ChangeUserData([FromBody] ChangeUserDataDTO cud)
+        public async Task<ActionResult> ChangeUserData([FromBody] ChangeUserDataDTO data)
         {
-            await _accountService.ChangeUserDataAdmin(cud);
+            await _accountService.ChangeUserDataAdmin(data);
             return Ok();
         }
         [HttpGet]

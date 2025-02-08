@@ -29,7 +29,7 @@ namespace WarehouseAppR.Server.Controllers
         }
         [HttpDelete("{name}")]
         [Authorize(Roles = "Manager,Admin")]
-        public async Task<ActionResult> Delete([FromRoute] string name)
+        public async Task<ActionResult> DeleteByName([FromRoute] string name)
         {
             await _manufacturerService.DeleteManufacturerByName(name);
             return NoContent();
