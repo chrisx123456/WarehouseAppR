@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WarehouseAppR.Server.DataAnnotations;
 using WarehouseAppR.Server.Models.DTO;
 using WarehouseAppR.Server.Services.Interfaces;
 
@@ -40,7 +41,7 @@ namespace WarehouseAppR.Server.Controllers
 
         [HttpGet("{ean}")]
         [Authorize(Roles = "User,Manager,Admin")]
-        public async Task<ActionResult<ProductDTO>> GetProductByEan([FromRoute]string ean)
+        public async Task<ActionResult<ProductDTO>> GetProductByEan([FromRoute][Ean]string ean)
         {
             var product = await _productService.GetProductByEan(ean);
             return Ok(product);
@@ -54,14 +55,14 @@ namespace WarehouseAppR.Server.Controllers
         }
         [HttpDelete("{ean}")]
         [Authorize(Roles = "Manager,Admin")]
-        public async Task<ActionResult> DeleteProduct([FromRoute]string ean)
+        public async Task<ActionResult> DeleteProduct([FromRoute][Ean]string ean)
         {
             await _productService.DeleteProductByEan(ean);
             return Ok();
         }
         [HttpPatch("{ean}")]
         [Authorize(Roles = "Manager,Admin")]
-        public async Task<ActionResult> UpdateProduct([FromBody] ProductPatchDTO patchData, [FromRoute]string ean)
+        public async Task<ActionResult> UpdateProduct([FromBody] ProductPatchDTO patchData, [FromRoute][Ean]string ean)
         {
             await _productService.UpdateProduct(patchData, ean);
             return Ok();
