@@ -67,6 +67,8 @@ namespace WarehouseAppR.Server.Services
         public async Task<ProductDTO> GetProductByTradeName(string tradeName)
         {
             var product = await _dbContext.Products.SingleOrDefaultAsync(p => p.TradeName.ToLower() == tradeName.ToLower());
+            if (product == null)
+                throw new NotFoundException("Product not found");
             var productDto = _mapper.Map<ProductDTO>(product);
             return productDto;
         }
