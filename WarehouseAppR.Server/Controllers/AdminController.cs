@@ -33,14 +33,14 @@ namespace WarehouseAppR.Server.Controllers
         }
         [HttpDelete("deleteBySeries/{series}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteStockAsync([FromRoute]string series, [FromQuery]bool stockDelivery, [FromQuery]bool sales)
+        public async Task<ActionResult> DeleteStockAndRelated([FromRoute]string series, [FromQuery]bool stockDelivery, [FromQuery]bool sales)
         {
             await _adminService.DeleteBySeries(series, stockDelivery, sales);
             return NoContent();
         }
         [HttpDelete("deleteProduct/{ean}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteProductByEan([FromRoute][Ean]string ean)
+        public async Task<ActionResult> DeleteProductAndRelated([FromRoute][Ean]string ean)
         {
             await _adminService.DeleteByEan(ean);
             return NoContent();

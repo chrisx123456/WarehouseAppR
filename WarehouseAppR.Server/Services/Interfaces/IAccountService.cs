@@ -5,9 +5,9 @@ namespace WarehouseAppR.Server.Services.Interfaces
     public interface IAccountService
     {
         public Task AddNewUser(UserDTO user);
-        public Task RemoveUser(string email);
+        public Task DeleteUserByEmail(string email);
         public Task ChangeUserDataAdmin(ChangeUserDataDTO data);
-        public Task<string> LoginGetJwt(LoginDTO loginData);
+        public Task<TokenDTO> LoginGetJwt(LoginDTO loginData);
         public Task ChangeEmail(string email, Guid id);
         public Task ChangePassword(PasswordDTO passwordDTO, Guid id);
         public Task ChangeUserPassword(ChangeUserPasswordDTO cup);

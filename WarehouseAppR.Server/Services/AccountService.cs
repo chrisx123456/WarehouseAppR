@@ -77,7 +77,7 @@ namespace WarehouseAppR.Server.Services
                 user.PasswordHash = _passwordHasher.HashPassword(user, data.Password);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task<string> LoginGetJwt(LoginDTO loginData)
+        public async Task<TokenDTO> LoginGetJwt(LoginDTO loginData)
         {
             var user = await _dbContext.Users.Include(u => u.Role).SingleOrDefaultAsync(u => u.Email.Equals(loginData.Email));
             if (user is null) throw new LoginException("Invalid email or password");
@@ -97,10 +97,10 @@ namespace WarehouseAppR.Server.Services
             var token = new JwtSecurityToken(_authenticationSettings.JwtIssuer, _authenticationSettings.JwtIssuer, claims, null, daysValid, creds);
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            return tokenHandler.WriteToken(token);
+            return new TokenDTO { Token = tokenHandler.WriteToken(token) };
         }
 
-        public async Task RemoveUser(string email)
+        public async Task DeleteUserByEmail(string email)
         {
             var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
             if (user is null) throw new NotFoundException("User with such email not found");

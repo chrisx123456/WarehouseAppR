@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WarehouseAppR.Server.DataAnnotations;
 using WarehouseAppR.Server.Models.DTO;
 using WarehouseAppR.Server.Services.Interfaces;
 
@@ -25,15 +26,22 @@ namespace WarehouseAppR.Server.Controllers
         }
         [HttpGet("name/{name}")]
         [Authorize(Roles = "User,Manager,Admin")]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProductByName([FromRoute]string name)
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProductsByName([FromRoute]string name)
         {
             var products = await _productService.GetProductsByName(name);
             return Ok(products);
         }
-        
+        [HttpGet("tradename/{name}")]
+        [Authorize(Roles = "User,Manager,Admin")]
+        public async Task<ActionResult<ProductDTO>> GetProductByTradeName([FromRoute]string name)
+        {
+            var prod = await _productService.GetProductByTradeName(name);
+            return Ok(prod);
+        }
+
         [HttpGet("{ean}")]
         [Authorize(Roles = "User,Manager,Admin")]
-        public async Task<ActionResult<ProductDTO>> GetProductByEan([FromRoute]string ean)
+        public async Task<ActionResult<ProductDTO>> GetProductByEan([FromRoute][Ean]string ean)
         {
             var product = await _productService.GetProductByEan(ean);
             return Ok(product);
@@ -47,33 +55,17 @@ namespace WarehouseAppR.Server.Controllers
         }
         [HttpDelete("{ean}")]
         [Authorize(Roles = "Manager,Admin")]
-        public async Task<ActionResult> DeleteProduct([FromRoute]string ean)
+        public async Task<ActionResult> DeleteProduct([FromRoute][Ean]string ean)
         {
             await _productService.DeleteProductByEan(ean);
             return Ok();
         }
         [HttpPatch("{ean}")]
         [Authorize(Roles = "Manager,Admin")]
-        public async Task<ActionResult> UpdatePriceOrAndDesc([FromBody] ProductPatchDTO patchData, [FromRoute]string ean)
+        public async Task<ActionResult> UpdateProduct([FromBody] ProductPatchDTO patchData, [FromRoute][Ean]string ean)
         {
             await _productService.UpdateProduct(patchData, ean);
             return Ok();
         }
-
-        //[HttpPatch("description/{ean}")]
-        //[Authorize(Roles = "Manager,Admin")]
-        //public async Task<ActionResult> UpdateDescription([FromBody] DescriptionDTO desc, [FromRoute]string ean)
-        //{
-        //    await _productService.UpdateDescription(ean, desc.Description);
-        //    return Ok();
-        //}
-        //[HttpPatch("{ean}")]
-        //[Authorize(Roles = "Manager,Admin")]
-        //public async Task<ActionResult> UpdateProductPrice([FromRoute] string ean, [FromQuery] decimal newPrice)
-        //{
-        //    await _productService.UpdateProductPrice(ean, newPrice);
-        //    return Ok();
-        //}
-
     }
 }

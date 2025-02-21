@@ -71,7 +71,7 @@ namespace WarehouseAppR.Server.Controllers
         }
         [Authorize(Roles = "Manager,Admin")]
         [HttpGet("salesFullData/search")]
-        public async Task<ActionResult<IEnumerable<SaleDTO>>> SearchSalesFull([FromQuery]string fullName = "", [FromQuery]string ean = "", [FromQuery]string series = "", 
+        public async Task<ActionResult<IEnumerable<SaleDTO>>> SearchSalesFull([FromQuery]string fullName = "", [FromQuery][Ean]string ean = "", [FromQuery]string series = "", 
             [FromQuery]DateOnly? dateFrom = null, [FromQuery]DateOnly? dateTo = null)
         {
             var sales = await _saleService.SearchSalesFull(fullName, ean, series, dateFrom, dateTo);

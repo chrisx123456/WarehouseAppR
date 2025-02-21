@@ -7,7 +7,7 @@ namespace WarehouseAppR.Server.Services.Interfaces
     public interface ICategoryService
     {
         public Task<IEnumerable<CategoryDTO>> GetAllCategories();
-        public Task<IEnumerable<CategoryDTO>> GetCategoryByName(string name);
+        public Task<CategoryDTO> GetCategoryByName(string name);
         public Task DeleteCategoryByName(string name);
         public Task AddNewCategory(CategoryDTO category);
         public Task UpdateCategoryVat(string name, int newVat);

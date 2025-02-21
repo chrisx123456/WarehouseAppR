@@ -55,7 +55,7 @@ namespace WarehouseAppR.Server.Services
         // bd -> server -> klient(strona)
         public async Task<IEnumerable<ProductDTO>> GetProductsByName(string name)
         {
-            var products = await _dbContext.Products.Where(p => p.Name.ToLower().Contains(name.ToLower())).ToListAsync(); //Materialization Lookup: LINQ to Entities
+            var products = await _dbContext.Products.Where(p => p.Name.ToLower() == name.ToLower()).ToListAsync(); //Materialization Lookup: LINQ to Entities
             //this is LINQ to Objects
             var productsDtos = _mapper.Map<List<ProductDTO>>(products);
             return productsDtos;
@@ -64,11 +64,13 @@ namespace WarehouseAppR.Server.Services
             //return null;
         }
 
-        public async Task<IEnumerable<ProductDTO>> GetProductsByTradeName(string tradeName)
+        public async Task<ProductDTO> GetProductByTradeName(string tradeName)
         {
-            var products = await _dbContext.Products.Where(p => p.TradeName.ToLower().Contains(tradeName.ToLower())).ToListAsync();
-            var productsDtos = _mapper.Map<List<ProductDTO>>(products);
-            return productsDtos;
+            var product = await _dbContext.Products.SingleOrDefaultAsync(p => p.TradeName.ToLower() == tradeName.ToLower());
+            if (product == null)
+                throw new NotFoundException("Product not found");
+            var productDto = _mapper.Map<ProductDTO>(product);
+            return productDto;
         }
 
         public async Task UpdateProduct(ProductPatchDTO patchData, string ean)

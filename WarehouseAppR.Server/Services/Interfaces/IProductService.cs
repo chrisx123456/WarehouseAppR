@@ -6,7 +6,7 @@ namespace WarehouseAppR.Server.Services.Interfaces
     {
         public Task<IEnumerable<ProductDTO>> GetAllProducts();
         public Task<IEnumerable<ProductDTO>> GetProductsByName(string name);
-        public Task<IEnumerable<ProductDTO>> GetProductsByTradeName(string tradeName);
+        public Task<ProductDTO> GetProductByTradeName(string tradeName);
         public Task<ProductDTO> GetProductByEan(string ean);
         public Task DeleteProductByEan(string ean);
         public Task AddNewProduct(ProductDTO product);

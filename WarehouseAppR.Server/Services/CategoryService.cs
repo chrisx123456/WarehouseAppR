@@ -52,17 +52,17 @@ namespace WarehouseAppR.Server.Services
             return categoriesDtos;
         }
 
-        public async Task<IEnumerable<CategoryDTO>> GetCategoryByName(string name)
+        public async Task<CategoryDTO> GetCategoryByName(string name)
         {
-            var categories = await _dbContext.Categories.Where(c => c.Name.ToLower().Contains(name.ToLower())).ToListAsync();
-            if (!categories.Any()) throw new NotFoundException("No category with such name");
-            var categoriesDtos = _mapper.Map<List<CategoryDTO>>(categories);
+            var category = await _dbContext.Categories.SingleOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
+            if (category == null) throw new NotFoundException("No category with such name");
+            var categoryDto = _mapper.Map<CategoryDTO>(category);
 
             //var categories = await _dbContext.Categories
             //    .Where(c => EF.Functions.Like(c.Name, $"%{name}%"))
             //    .ProjectTo<CategoryDTO>(_mapper.ConfigurationProvider)
             //    .ToListAsync();
-            return categoriesDtos;
+            return categoryDto;
         }
 
         public async Task UpdateCategoryVat(string name, int newVat)

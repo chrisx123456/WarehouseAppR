@@ -4,9 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <SpaRoot>..\warehouseappr.client</SpaRoot>
+    <SpaRoot>C:\Users\chris\source\repos\WarehouseAppFrontend\warehouseappfrontend</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
     <SpaProxyServerUrl>https://localhost:60243</SpaProxyServerUrl>
+    <UserSecretsId>7412eccb-cef8-4656-9b23-391d268d4d03</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,10 +24,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.14" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
-
+	
+    <ItemGroup>
+	    <ProjectReference Include="C:\Users\chris\source\repos\WarehouseAppFrontend\warehouseappfrontend\warehouseappfrontend.esproj">
+		    <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+	    </ProjectReference>	
+    </ItemGroup>
+	
   <ItemGroup>
     <Folder Include="Migrations\" />
   </ItemGroup>

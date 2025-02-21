@@ -33,10 +33,10 @@ namespace WarehouseAppR.Server.Controllers
 
         [HttpGet("series/{series}")]
         [Authorize(Roles = "User,Manager,Admin")]
-        public async Task<ActionResult<IEnumerable<StockDTO>>> GetInStockBySeries([FromRoute] string series)
+        public async Task<ActionResult<StockDTO>> GetInStockBySeries([FromRoute] string series)
         {
             var inStock = await _stockService.GetInStockBySeries(series);
-            return Ok(new List<StockDTO>() { inStock });
+            return Ok(inStock);
         }
 
         [HttpGet("date/{date}")]
